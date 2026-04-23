@@ -1,0 +1,172 @@
+<div>
+    <div class="container" style="padding-top:35px;">
+
+        <!-- HEADER -->
+        <div class="row valign-wrapper">
+            <div class="col s12 m6">
+                <h4 class="grey-text text-darken-4" style="margin:0;">
+                    Queue Control Panel
+                </h4>
+                <p class="grey-text">Manage tickets in real time.</p>
+            </div>
+        </div>
+
+        <!-- MAIN GRID -->
+        <div class="row">
+
+            <!-- LEFT SIDE -->
+            <div class="col s12 l4">
+
+                <!-- CURRENT TURN -->
+                <div class="card white z-depth-1" style="border-radius:18px;">
+                    <div class="card-content center-align">
+                        <p class="grey-text">CURRENT TURN</p>
+                        <h1 class="teal-text text-darken-2" style="margin:0; font-size:5rem;">A17</h1>
+                        <p class="grey-text">Serving now</p>
+                    </div>
+                </div>
+
+                <!-- QUICK ACTIONS -->
+                <div class="card white z-depth-1" style="border-radius:18px;">
+                    <div class="card-content">
+
+                        <h6><b>Quick Actions</b></h6>
+
+                        <a class="btn-large teal darken-1 waves-effect waves-light"
+                           style="width:100%; border-radius:30px; margin-top:15px;">
+                            <i class="material-icons left">skip_next</i>
+                            Next Turn
+                        </a>
+
+                        <a class="btn-large orange waves-effect waves-light"
+                           style="width:100%; border-radius:30px; margin-top:15px;">
+                            <i class="material-icons left">free_breakfast</i>
+                            Break Mode
+                        </a>
+
+                        <a class="btn-large red waves-effect waves-light"
+                           style="width:100%; border-radius:30px; margin-top:15px;">
+                            <i class="material-icons left">cancel</i>
+                            Cancel Turn
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CENTER -->
+            <div class="col s12 l8">
+
+                <!-- LIVE STATS -->
+                <div class="row">
+
+                    <div class="col s12 m4">
+                        <div class="card white z-depth-1 center-align" style="border-radius:18px;">
+                            <div class="card-content">
+                                <h4 class="teal-text">26</h4>
+                                <p class="grey-text">Waiting</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s12 m4">
+                        <div class="card white z-depth-1 center-align" style="border-radius:18px;">
+                            <div class="card-content">
+                                <h4 class="teal-text">08 min</h4>
+                                <p class="grey-text">Avg Wait</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col s12 m4">
+                        <div class="card white z-depth-1 center-align" style="border-radius:18px;">
+                            <div class="card-content">
+                                <h4 class="teal-text">42</h4>
+                                <p class="grey-text">Served Today</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TURN TABLE -->
+                <div class="card white z-depth-1" style="border-radius:18px;">
+                    <div class="card-content">
+
+                        <div class="row valign-wrapper" style="margin-bottom:0;">
+                            <div class="col s12 m6">
+                                <h5 class="grey-text text-darken-4">All Tickets</h5>
+                            </div>
+
+                            <div class="col s12 m6 right-align">
+                                <input type="text" placeholder="Search ticket..."
+                                       style="padding-left:15px; border-radius:10px; border:1px solid #ddd;">
+                            </div>
+                        </div>
+
+                        <table class="highlight responsive-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket</th>
+                                    <th>Status</th>
+                                    <th>Wait Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td>A18</td>
+                                    <td><span class="new badge blue" data-badge-caption="">Waiting</span></td>
+                                    <td>4 min</td>
+                                    <td>
+                                        <a class="btn-small teal">Call</a>
+                                        <a class="btn-small red">Cancel</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>A19</td>
+                                    <td><span class="new badge blue" data-badge-caption="">Waiting</span></td>
+                                    <td>6 min</td>
+                                    <td>
+                                        <a class="btn-small teal">Call</a>
+                                        <a class="btn-small red">Cancel</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>A20</td>
+                                    <td><span class="new badge green" data-badge-caption="">Ready</span></td>
+                                    <td>8 min</td>
+                                    <td>
+                                        <a class="btn-small teal">Call</a>
+                                        <a class="btn-small red">Cancel</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>A21</td>
+                                    <td><span class="new badge orange" data-badge-caption="">Paused</span></td>
+                                    <td>10 min</td>
+                                    <td>
+                                        <a class="btn-small teal">Resume</a>
+                                        <a class="btn-small red">Cancel</a>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

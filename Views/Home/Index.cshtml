@@ -1,0 +1,148 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    <div class="row">
+
+        <div class="col s12 center-align">
+
+            <div class="section" style="min-height: 85vh; display: flex; flex-direction: column; justify-content: center;">
+
+                <!-- TITLE -->
+                <h2 class="grey-text text-darken-4 display-3" style="font-weight: 500;">
+                    Serve your customers<br>
+                    <span class="teal-text text-darken-2" style="font-style: italic;">
+                        without waiting lines
+                    </span>, without chaos.
+                </h2>
+
+                <!-- DESCRIPTION -->
+                <p class="grey-text text-darken-1 flow-text" style="max-width: 700px; margin: 20px auto;">
+                    Fila is a smart queue management system for clinics, banks, retail stores,
+                    and service offices. Create digital queues, call customers in order,
+                    and manage your waiting room experience in real time.
+                </p>
+
+                <p class="grey-text text-darken-1" style="max-width: 700px; margin: 0 auto;">
+                    Improve efficiency, reduce waiting frustration, and give your customers a smoother,
+                    more modern experience without paper tickets or physical lines.
+                </p>
+
+                <!-- BUTTONS -->
+                <div class="section" style="margin-top: 30px;">
+                    <a class="btn btn-dark" style="border-radius: 30px;" asp-controller="User" asp-action="Turn">
+                        GET YOUR TURN
+                    </a>
+                    
+                </div>
+
+                <!-- STATS -->
+                <div class="divider" style="margin-top: 40px;"></div>
+
+                <div class="row" style="margin-top: 30px;">
+                    
+                    <div class="col s12 m4 center-align">
+                        <h5 class="teal-text text-darken-2">-62%</h5>
+                        <p class="grey-text">Average waiting time</p>
+                    </div>
+
+                    <div class="col s12 m4 center-align">
+                        <h5 class="teal-text text-darken-2">+38%</h5>
+                        <p class="grey-text">Customer satisfaction (NPS)</p>
+                    </div>
+
+                    <div class="col s12 m4 center-align">
+                        <h5 class="teal-text text-darken-2">0</h5>
+                        <p class="grey-text">Paper-based queues</p>
+                    </div>
+                    <div class="divider" style="margin-top: 40px;"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<section class="py-5" >
+
+<div class="container">
+
+    <!-- TITLE -->
+    <div class="text-center mb-5">
+        <small class="text-primary fw-bold">FEATURES</small>
+        <h2 class="display-4 fw-light mt-2">
+            Everything you need to make queues <br>
+            <em>simply work.</em>
+        </h2>
+    </div>
+
+    <!-- GRID -->
+    <div class="row g-4">
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 text-center p-4">
+                <i class="bi bi-clipboard2-check-fill text-primary fs-1 mb-3"></i>
+                <h4>Smart Registration</h4>
+                <p class="text-muted">
+                    Create tickets in seconds by validating ID. If the user already exists, the system recognizes them automatically.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 text-center p-4">
+                <i class="bi bi-display text-primary fs-1 mb-3"></i>
+                <h4>Live Waiting Room</h4>
+                <p class="text-muted">
+                    Screen with current ticket, live queue status, and visual content.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 text-center p-4">
+                <i class="bi bi-headset text-primary fs-1 mb-3"></i>
+                <h4>Advisor Panel</h4>
+                <p class="text-muted">
+                    Call the next ticket and update customer data from a single dashboard.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 text-center p-4">
+                <i class="bi bi-volume-up-fill text-primary fs-1 mb-3"></i>
+                <h4>Voice Calling</h4>
+                <p class="text-muted">
+                    Sound alerts and automatic voice notifications.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 text-center p-4">
+                <i class="bi bi-bar-chart-fill text-primary fs-1 mb-3"></i>
+                <h4>Clear Metrics</h4>
+                <p class="text-muted">
+                    Average service time, advisor performance, and live demand statistics.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 text-center p-4">
+                <i class="bi bi-qr-code text-primary fs-1 mb-3"></i>
+                <h4>QR Access</h4>
+                <p class="text-muted">
+                    Customers can take a ticket by scanning a QR code. No paper, no contact.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</section>
