@@ -1,0 +1,206 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var isHome = controller == "Home" && action == "Index";
+    var isLogin = controller == "Login" && action == "Index" || action == "Register" && controller == "Login";
+    var isAdmin = controller == "Admin"; 
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NextInLine</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/NextInLine.styles.css" asp-append-version="true" />
+
+    <!-- MATERIALIZE -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body class="teal lighten-5">
+
+<header>
+
+@if(isHome)
+{
+    <!-- NAVBAR LANDING -->
+    <nav class="white z-depth-0">
+        <div class="nav-wrapper container">
+
+            <a asp-controller="Home" asp-action="Index" class="brand-logo black-text" style="font-size:24px; font-weight:600;">
+                TextInLine
+            </a>
+
+            <ul class="right hide-on-med-and-down">
+                <li><a class="grey-text text-darken-2" href="#">Product</a></li>
+                <li><a class="grey-text text-darken-2" href="#">About</a></li>
+                <li>
+                    <a asp-action="Turn" asp-controller="User"
+                       class="btn black white-text"
+                       style="border-radius:25px;">
+                        Get your turn
+                    </a>
+                </li>
+            </ul>
+
+            <a data-target="mobile-menu" class="sidenav-trigger right" asp-action="Turn" asp-controller="User">
+                <i class="material-icons black-text">Get your turn</i>
+            </a>
+        </div>
+    </nav>
+}
+else if (isLogin)
+{
+    
+}
+else if (isAdmin)
+{
+    <nav class="white z-depth-0">
+        <div class="nav-wrapper container">
+
+            <a asp-controller="Home" asp-action="Index" class="brand-logo black-text" style="font-size:24px; font-weight:600;">
+                TextInLine
+            </a>
+
+            <ul class="right hide-on-med-and-down">
+                <li><a class="grey-text text-darken-2" asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
+                <li><a class="grey-text text-darken-2" asp-action="Index" asp-controller="Admin">Turn</a></li>
+                <li>
+                    <a asp-controller="Home" asp-action="Index"
+                       class="btn black white-text"
+                       style="border-radius:25px;">
+                        Menu
+                    </a>
+                </li>
+            </ul>
+
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger right">
+                <i class="material-icons black-text">Menu</i>
+            </a>
+        </div>
+    </nav>
+}
+else
+{
+    <!-- NAVBAR APP -->
+    <nav class="teal white">
+        <div class="nav-wrapper container">
+
+            <a asp-controller="Home" asp-action="Index" class="brand-logo black-text">
+                TextInLine
+            </a>
+
+            <ul class="right hide-on-med-and-down black-text">
+                <li>
+                    <a asp-controller="Home" asp-action="Index" class="black-text">Menu</a>
+                </li>
+            </ul>
+
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger right">
+                <i class="material-icons">menu</i>
+            </a>
+        </div>
+    </nav>
+}
+
+<!-- MOBILE -->
+<ul class="sidenav" id="mobile-menu">
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+</ul>
+
+</header>
+
+<main class="pb-3" style="min-height:100vh;">
+    @RenderBody()
+</main>
+
+<footer class="page-footer white z-depth-0" style="border-top:1px solid #e0e0e0; margin-top:60px;">
+
+    <div class="container" style="padding:35px 0;">
+
+        <div class="row" style="margin-bottom:0;">
+
+            <!-- BRAND -->
+            <div class="col s12 m4">
+                <h5 class="black-text" style="font-weight:600; margin-top:0;">
+                    NextInLine
+                </h5>
+
+                <p class="grey-text text-darken-1">
+                    Smart queue management for clinics, banks,
+                    retail stores and modern service businesses.
+                </p>
+            </div>
+
+            <!-- LINKS -->
+            <div class="col s12 m4">
+                <h6 class="black-text"><b>Quick Links</b></h6>
+
+                <ul>
+                    <li><a href="#" class="grey-text text-darken-1">Home</a></li>
+                    <li><a href="#" class="grey-text text-darken-1">Features</a></li>
+                    <li><a href="#" class="grey-text text-darken-1">Login</a></li>
+                    <li><a href="#" class="grey-text text-darken-1">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- CONTACT -->
+            <div class="col s12 m4">
+                <h6 class="black-text"><b>Contact</b></h6>
+
+                <p class="grey-text text-darken-1" style="margin-bottom:8px;">
+                    support@nextinline.com
+                </p>
+
+                <p class="grey-text text-darken-1">
+                    Medellín, Colombia
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BOTTOM -->
+    <div class="footer-copyright white"
+         style="border-top:1px solid #eeeeee;">
+
+        <div class="container grey-text text-darken-1"
+             style="padding:12px 0; display:flex; justify-content:space-between; flex-wrap:wrap;">
+
+            <span>© 2026 NextInLine. All rights reserved.</span>
+
+            <span>
+                Built with for better customer experiences
+            </span>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var elems = document.querySelectorAll('.sidenav');
+    M.Sidenav.init(elems);
+});
+</script>
+
+@await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
