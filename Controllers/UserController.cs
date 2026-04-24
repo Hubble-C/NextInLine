@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace SistemaDeTurnos.Controllers;
+namespace NextInLine.Controllers;
 
 public class UserController : Controller
 {

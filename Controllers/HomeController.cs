@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SistemaDeTurnos.Models;
+using NextInLine.Models;
 
-namespace SistemaDeTurnos.Controllers;
+namespace NextInLine.Controllers;
 
 public class HomeController : Controller
 {
