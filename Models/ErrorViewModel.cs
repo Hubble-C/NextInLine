@@ -1,4 +1,4 @@
-namespace SistemaDeTurnos.Models;
+namespace NextInLine.Models;
 
 public class ErrorViewModel
 {
