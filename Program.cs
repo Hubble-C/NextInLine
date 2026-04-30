@@ -1,12 +1,22 @@
 using NextInLine.Interfaces; 
 using NextInLine.Services;
+using NextInLine.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped<TicketService>();
 builder.Services.AddScoped<ITurnService, TurnServiceImplementation>();
+
+builder.Services.AddDbContext<MysqlDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("mysqlConnection"),
+        new MySqlServerVersion(new Version(9, 0, 15))
+    )
+);
 
 var app = builder.Build();
 
