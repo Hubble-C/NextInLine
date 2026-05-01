@@ -2,21 +2,51 @@
 @model IEnumerable<Ticket> 
 @{
     ViewData["message"] = "Mensaje";
-    int pendings = @Model.Where(t => t.Status == TicketStatus.pending).Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date).Count();
-    var tickets = @Model.Where(t => t.Status == TicketStatus.pending).Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date);
+    /*Count Pendings status tickets*/
+    int pendings = @Model.Where(t => t.Status == TicketStatus.pending)
+        .Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
+        .Count();
     
+    /*All the tickets pendings ordered*/
+    var tickets = @Model.Where(t => t.Status == TicketStatus.pending)
+        .Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
+        .OrderBy(t => t.CreatedAt)
+        .ToList();
+    
+    /*Pendings today*/
     int servedToday = @Model.Where(t => t.Status == TicketStatus.closed).Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date).Count();
+    
+    /*Pendings Totals*/
     var pendingsTotal = @Model.Where(t => t.Status == TicketStatus.pending)
         .Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
         .Select(t => t.CreatedAt)
         .ToList();
+    
+    /*Average by time of waiting*/
     var averageMinutes = pendingsTotal
         .Select(date => (DateTime.UtcNow - date).TotalMinutes)
         .DefaultIfEmpty(0)
         .Average();
     
+    /*Result of averageMinutes*/
     var averageTime = TimeSpan.FromMinutes(averageMinutes);
+    
+    /*Store the next ticket to call*/
+    var nextTicket = tickets.FirstOrDefault()?.Code??"No hay tickets para hoy";
 }
+
+<div id="toast" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #26a69a;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: none;
+    z-index: 9999;
+    font-weight: bold;">
+</div>
 
 <div>
     <div class="container" style="padding-top:35px;">
@@ -40,8 +70,8 @@
                 <!-- CURRENT TURN -->
                 <div class="card white z-depth-1" style="border-radius:18px;">
                     <div class="card-content center-align">
-                        <p class="grey-text">CURRENT TURN</p>
-                        <h1 class="teal-text text-darken-2" style="margin:0; font-size:5rem;">A17</h1>
+                        <p class="grey-text">Next Turn</p>
+                        <h1 id="currentTurn" class="teal-text text-darken-2" style="margin:0; font-size:5rem;"></h1>
                         <p class="grey-text">Serving now</p>
                     </div>
                 </div>
@@ -52,12 +82,20 @@
 
                         <h6><b>Quick Actions</b></h6>
 
-                        <a class="btn-large teal darken-1 waves-effect waves-light"
+                        @*<a class="btn-large teal darken-1 waves-effect waves-light"
                            style="width:100%; border-radius:30px; margin-top:15px;">
                             <i class="material-icons left">skip_next</i>
                             Next Turn
-                        </a>
-
+                        </a>*@
+                        <form id="antiForgeryForm">
+                            @Html.AntiForgeryToken()
+                            <button id="nextTurnBtn"
+                                    class="btn-large teal darken-1"
+                                    style="width:100%; border-radius:30px; margin-top:15px;">
+                                <i class="material-icons left">skip_next</i>
+                                Next Turn
+                            </button>
+                        </form>
                         <a class="btn-large orange waves-effect waves-light"
                            style="width:100%; border-radius:30px; margin-top:15px;">
                             <i class="material-icons left">free_breakfast</i>
@@ -84,7 +122,7 @@
                     <div class="col s12 m4">
                         <div class="card white z-depth-1 center-align" style="border-radius:18px;">
                             <div class="card-content">
-                                <h4 class="teal-text">@pendings</h4>
+                                <h4 class="teal-text" id="pendingsToday">@pendings</h4>
                                 <p class="grey-text">Waiting</p>
                             </div>
                         </div>
@@ -130,19 +168,7 @@
                             </thead>
 
                             <tbody>
-                                @foreach (var ticket in tickets)
-                                {
-                                    
-                                    TimeSpan waitingTime = DateTime.UtcNow - ticket.CreatedAt;
-                                    
-                                    <tr>
-                                        <td>@ticket.Code</td>
-                                        <td>
-                                            <span class="chip orange white-text" data-badge-caption="">@ticket.Status</span>
-                                        </td>
-                                        <td> @($"{waitingTime.Minutes:D2}:{waitingTime.Seconds:D2}")</td>
-                                    </tr>
-                                }
+
 
                             </tbody>
                         </table>
@@ -157,3 +183,91 @@
     </div>
 
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/turnHub")
+        .withAutomaticReconnect()
+        .build();
+    
+    const statPending = document.getElementById("pendingsToday");
+    const toast = document.getElementById("toast");
+    const btnNext = document.getElementById("nextTurnBtn");
+    const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+    btnNext.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        console.log("CLICK NEXT TURN");
+        
+        try {
+            const res = await fetch('/Admin/NextTurn', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                }
+            });
+
+            const data = await res.text();
+            console.log("RESPUESTA:", data);
+
+        } catch (error) {
+            console.error("ERROR FETCH:", error);
+        }
+    });
+    
+    connection.on("ReceiveTurn", (code) => {
+        console.log("RECIBIDO:", code);
+        
+        document.getElementById("currentTurn").innerText = code;
+   
+        const toast = document.getElementById("toast");
+
+        if (!toast) {
+            console.error("Toast no existe en el DOM");
+            return;
+        }
+
+        toast.innerText = `Nuevo turno: ${code}`;
+        toast.style.display = "block";
+
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 3000);
+    });
+
+    connection.start().then(() => {
+        console.log("SignalR conectado");
+    });
+    
+    async function refreshTickets() {
+
+        const res = await fetch('/Admin/GetTicketsPendings');
+        const tickets = await res.json();
+
+        statPending.textContent = tickets.length;
+       // document.getElementById("pendingsToday").innerText = "35";
+        const tbody = document.querySelector("tbody");
+        tbody.innerHTML = "";
+        
+        tickets
+            .forEach(t => {
+
+                const waiting = new Date() - new Date(t.createdAt);
+                const minutes = Math.floor(waiting / 60000);
+                const seconds = Math.floor((waiting % 60000) / 1000);
+
+                tbody.innerHTML += `
+                <tr>
+                    <td>${t.code}</td>
+                    <td><span class="chip orange white-text">pending</span></td>
+                    <td>${minutes}:${seconds}</td>
+                </tr>
+            `;
+            });
+    }
+    refreshTickets();
+</script>

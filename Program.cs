@@ -2,6 +2,7 @@ using NextInLine.Interfaces;
 using NextInLine.Services;
 using NextInLine.Data;
 using Microsoft.EntityFrameworkCore;
+using NextInLine.TurnsHub;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,11 @@ builder.Services.AddDbContext<MysqlDbContext>(options =>
     )
 );
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
+/*This class to render on live page turns */
+app.MapHub<TurnHub>("/turnHub");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
