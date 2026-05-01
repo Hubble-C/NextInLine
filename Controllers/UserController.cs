@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NextInLine.Interfaces;
+using NextInLine.Models;
 using NextInLine.Models.ViewModels;
+using NextInLine.Services;
 
 namespace NextInLine.Controllers;
 
@@ -8,42 +10,36 @@ namespace NextInLine.Controllers;
 public class UserController : Controller
 {
     private readonly ITurnService _turnService;
-
+    private readonly UserService _userService;
     // Constructor para inyectar el servicio 
-    public UserController(ITurnService turnService)
+    public UserController(ITurnService turnService,  UserService userService)
     {
         _turnService = turnService;
+        _userService = userService;
     }
 
     // Accion para mostrar el formulario de registro de turnos
-    [HttpGet]
     public IActionResult Turn()
     {
         return View();
     }
 
-    // Accion para procesar el registro del turno cuando el usuario hace clic en enviar
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Turn(UserTicketViewModel model)
+    public async Task<IActionResult> Save(User user)
     {
-        // Revisamos que los datos del formulario sean validos
-        if (!ModelState.IsValid)
+        var result = await _userService.Create(user);
+
+        if (!result.Success)
         {
-            return View(model);
+            TempData["Error"] = result.Message;
+            return View("Turn");
         }
 
-        // Llamamos al servicio para generar el turno en la base de datos
-        var success = await _turnService.GenerateTurnAsync(model);
+        // Puedes pasar el código del ticket
+        TempData["Success"] = result.Message;
 
-        if (success)
-        {
-            // Si todo sale bien, lo mandamos a la sala de espera (Index)
-            return RedirectToAction("Index");
-        }
-
-        // Si hay un error, volvemos a mostrar el formulario
-        return View(model);
+        return RedirectToAction("Turn");
     }
 
     // Accion para mostrar la sala de espera con los datos reales

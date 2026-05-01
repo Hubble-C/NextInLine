@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<TicketService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ITurnService, TurnServiceImplementation>();
 
 builder.Services.AddDbContext<MysqlDbContext>(options =>
