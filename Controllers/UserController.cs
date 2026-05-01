@@ -29,15 +29,14 @@ public class UserController : Controller
     public async Task<IActionResult> Save(User user)
     {
         var result = await _userService.Create(user);
-
+        
         if (!result.Success)
         {
             TempData["Error"] = result.Message;
             return View("Turn");
-        }
-
         // Puedes pasar el código del ticket
         TempData["Success"] = result.Message;
+        }
 
         return RedirectToAction("Turn");
     }
