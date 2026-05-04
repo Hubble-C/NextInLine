@@ -50,7 +50,7 @@ public class TicketService
         {
             // 1. Validar si ya tiene ticket activo
             var ticketRepeat = _dbContext.tickets
-                .FirstOrDefault(t => t.UserId == userId && t.Status == TicketStatus.open);
+                .FirstOrDefault(t => t.UserId == userId && (t.Status == TicketStatus.pending ||  t.Status == TicketStatus.open));
 
             if (ticketRepeat != null)
             {
@@ -86,7 +86,7 @@ public class TicketService
             {
                 UserId = userId,
                 Code = newCode,
-                Status = TicketStatus.open,
+                Status = TicketStatus.pending,
                 CreatedAt = DateTime.Now
             };
 
