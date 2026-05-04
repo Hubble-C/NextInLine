@@ -8,4 +8,6 @@ public class TurnHub : Hub
     {
         await Clients.All.SendAsync("ReceiveTurn", code);
     }
+    
+    
 }
