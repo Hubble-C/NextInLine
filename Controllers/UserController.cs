@@ -11,16 +11,19 @@ public class UserController : Controller
 {
     private readonly ITurnService _turnService;
     private readonly UserService _userService;
+    private readonly TicketService _ticketService;
     // Constructor para inyectar el servicio 
-    public UserController(ITurnService turnService,  UserService userService)
+    public UserController(ITurnService turnService,  UserService userService, TicketService ticketService)
     {
         _turnService = turnService;
         _userService = userService;
+        _ticketService = ticketService;
     }
 
     // Accion para mostrar el formulario de registro de turnos
     public IActionResult Turn()
     {
+        
         return View();
     }
 
@@ -46,7 +49,7 @@ public class UserController : Controller
     public async Task<IActionResult> Index()
     {
         // Pedimos los datos al servicio para "pintar" la vista
-        var data = await _turnService.GetWaitingRoomDataAsync();
-        return View(data);
+        var data =  _ticketService.GetAllTickets();
+        return View(data.Data);
     }
 }
