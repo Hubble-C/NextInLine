@@ -26,7 +26,10 @@ public class TicketService
     /*Get all penging tickets */
     public ServiceResponse<IEnumerable<Ticket>> GetTicketsPendings()
     {
-        var tickets = _dbContext.tickets.Where(t => t.Status == TicketStatus.pending).ToList();
+        var tickets = _dbContext.tickets.Where(t => t.Status == TicketStatus.pending)
+            .OrderBy(t => t.CreatedAt)
+            .ToList();
+        
         return new ServiceResponse<IEnumerable<Ticket>>()
         {
             Data = tickets,
