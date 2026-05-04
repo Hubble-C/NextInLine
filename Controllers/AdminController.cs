@@ -29,23 +29,33 @@ public class AdminController : Controller
     public async Task<IActionResult> NextTurn()
     {
         var tickets = _ticketService.GetAllTickets().Data;
-
+        var actuallyT = tickets.FirstOrDefault(t => t.Status == TicketStatus.open);
+        
         var next = tickets
             .Where(t => t.Status == TicketStatus.pending)
             .OrderBy(t => t.CreatedAt)
             .FirstOrDefault();
-
+        
+        if (actuallyT != null)
+        {
+            actuallyT.Status = TicketStatus.closed;
+            _ticketService.UpdateTicket(actuallyT);
+        }
+        
         if (next == null)
         {
             await _hub.Clients.All.SendAsync("ReceiveTurn", "NO_TICKETS");
             return Ok("NO_TICKETS");
         }
-        next.Status = TicketStatus.open;
-        _ticketService.UpdateTicket(next);
-
-        await _hub.Clients.All.SendAsync("ReceiveTurn", next.Code);
-        Console.WriteLine("ENVIANDO TURNO: " + next.Code);
-        return Ok(next.Code);
+        else
+        {
+            next.Status = TicketStatus.open;
+            _ticketService.UpdateTicket(next);
+            await _hub.Clients.All.SendAsync("ReceiveTurn", next.Code);
+            return Ok(next.Code);
+        }
+        
+        return Ok("No there's next turn");
     }
     
     public IActionResult Index()

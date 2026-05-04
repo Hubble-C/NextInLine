@@ -30,9 +30,6 @@
     
     /*Result of averageMinutes*/
     var averageTime = TimeSpan.FromMinutes(averageMinutes);
-    
-    /*Store the next ticket to call*/
-    var nextTicket = tickets.FirstOrDefault()?.Code??"No hay tickets para hoy";
 }
 
 <div id="toast" style="
@@ -71,7 +68,9 @@
                 <div class="card white z-depth-1" style="border-radius:18px;">
                     <div class="card-content center-align">
                         <p class="grey-text">Next Turn</p>
+                        
                         <h1 id="currentTurn" class="teal-text text-darken-2" style="margin:0; font-size:5rem;"></h1>
+                        
                         <p class="grey-text">Serving now</p>
                     </div>
                 </div>
@@ -192,11 +191,13 @@
         .withAutomaticReconnect()
         .build();
     
+    //Store next Turn on session
+    const nextTurn = sessionStorage.getItem("nextTurn");
     const statPending = document.getElementById("pendingsToday");
     const toast = document.getElementById("toast");
     const btnNext = document.getElementById("nextTurnBtn");
     const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
-
+    
     btnNext.addEventListener("click", async (e) => {
         e.preventDefault();
 
@@ -212,18 +213,26 @@
             });
 
             const data = await res.text();
+            console.log("STATUS:", res.status);
+            console.log("OK:", res.ok);
+            sessionStorage.setItem("nextTurn", data);
+            
+            setTimeout(()=>{
+                window.location.reload();
+            }, 2000)
+           
             console.log("RESPUESTA:", data);
-
         } catch (error) {
             console.error("ERROR FETCH:", error);
         }
+
+        
     });
     
+    // To call last turn receive
     connection.on("ReceiveTurn", (code) => {
         console.log("RECIBIDO:", code);
         
-        document.getElementById("currentTurn").innerText = code;
-   
         const toast = document.getElementById("toast");
 
         if (!toast) {
@@ -236,6 +245,7 @@
 
         setTimeout(() => {
             toast.style.display = "none";
+            refreshTickets();
         }, 3000);
     });
 
@@ -244,10 +254,16 @@
     });
     
     async function refreshTickets() {
-
+        // Set value next turn
+        if(nextTurn){
+            document.getElementById("currentTurn").innerText = nextTurn;
+        }else{
+            document.getElementById("currentTurn").innerText = "Sin turnos";
+        }
+        
         const res = await fetch('/Admin/GetTicketsPendings');
         const tickets = await res.json();
-
+        
         statPending.textContent = tickets.length;
        // document.getElementById("pendingsToday").innerText = "35";
         const tbody = document.querySelector("tbody");
