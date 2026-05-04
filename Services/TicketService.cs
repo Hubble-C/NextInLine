@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using NextInLine.Data;
 using NextInLine.Enums;
 using NextInLine.Models;
@@ -14,7 +13,7 @@ public class TicketService
     {
         _dbContext = dbContext;
     }
-
+    /*Get all  tickets */
     public ServiceResponse<IEnumerable<Ticket>> GetAllTickets()
     {
         var tickets = _dbContext.tickets.ToList();
@@ -24,7 +23,16 @@ public class TicketService
             Success = true
         };
     }
-    
+    /*Get all penging tickets */
+    public ServiceResponse<IEnumerable<Ticket>> GetTicketsPendings()
+    {
+        var tickets = _dbContext.tickets.Where(t => t.Status == TicketStatus.pending).ToList();
+        return new ServiceResponse<IEnumerable<Ticket>>()
+        {
+            Data = tickets,
+            Success = true
+        };
+    }
     /*Find one ticket by their ID */
     public ServiceResponse<Ticket> GetTicketById(int ticketId)
     {
@@ -109,5 +117,39 @@ public class TicketService
                 Message = e.Message
             };
         }
+    }
+
+    public ServiceResponse<Ticket> UpdateTicket(Ticket ticket)
+    {
+        var response = new ServiceResponse<Ticket>();
+        try
+        {
+            var existingTicket = _dbContext.tickets.FirstOrDefault(t => t.Id == ticket.Id);
+
+            if (existingTicket == null)
+            {
+                response.Success = false;
+                response.Message = "Ticket no encontrado";
+                return response;
+            }
+
+            // Actualizar campos (ajusta según tu modelo)
+            existingTicket.Code = ticket.Code;
+            existingTicket.Status = ticket.Status;
+
+            _dbContext.SaveChanges();
+
+            response.Data = existingTicket;
+            response.Success = true;
+            response.Message = "Ticket actualizado correctamente";
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = "Error al actualizar el ticket";
+            // opcional: log ex
+        }
+
+        return response;
     }
 }
