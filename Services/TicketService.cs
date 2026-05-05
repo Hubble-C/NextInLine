@@ -1,4 +1,5 @@
 using NextInLine.Data;
+using NextInLine.Enums;
 using NextInLine.Models;
 using NextInLine.Response;
 
@@ -7,12 +8,12 @@ namespace NextInLine.Services;
 public class TicketService
 {
     private readonly MysqlDbContext _dbContext;
-
+    private const string PREFIX = "TCK";
     public TicketService(MysqlDbContext dbContext)
     {
         _dbContext = dbContext;
     }
-
+    /*Get all  tickets */
     public ServiceResponse<IEnumerable<Ticket>> GetAllTickets()
     {
         var tickets = _dbContext.tickets.ToList();
@@ -22,7 +23,19 @@ public class TicketService
             Success = true
         };
     }
-    
+    /*Get all penging tickets */
+    public ServiceResponse<IEnumerable<Ticket>> GetTicketsPendings()
+    {
+        var tickets = _dbContext.tickets.Where(t => t.Status == TicketStatus.pending)
+            .OrderBy(t => t.CreatedAt)
+            .ToList();
+        
+        return new ServiceResponse<IEnumerable<Ticket>>()
+        {
+            Data = tickets,
+            Success = true
+        };
+    }
     /*Find one ticket by their ID */
     public ServiceResponse<Ticket> GetTicketById(int ticketId)
     {
@@ -40,5 +53,106 @@ public class TicketService
             Data = ticket,
             Success = true
         };
+    }
+
+    public ServiceResponse<Ticket> AddTicket(int userId)
+    {
+        try
+        {
+            // 1. Validar si ya tiene ticket activo
+            var ticketRepeat = _dbContext.tickets
+                .FirstOrDefault(t => t.UserId == userId && (t.Status == TicketStatus.pending ||  t.Status == TicketStatus.open));
+
+            if (ticketRepeat != null)
+            {
+                return new ServiceResponse<Ticket>()
+                {
+                    Success = false,
+                    Message = "User already has an active ticket",
+                    Data = ticketRepeat
+                };
+            }
+
+            // 2. Obtener último ticket para generar código
+            var lastTicket = _dbContext.tickets
+                .OrderByDescending(t => t.Id)
+                .FirstOrDefault();
+
+            int nextNumber = 1;
+
+            if (lastTicket != null && !string.IsNullOrEmpty(lastTicket.Code))
+            {
+                var parts = lastTicket.Code.Split('-');
+
+                if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                {
+                    nextNumber = number + 1;
+                }
+            }
+
+            string newCode = $"TCK-{nextNumber:D3}";
+
+            // 3. Crear ticket
+            var newTicket = new Ticket()
+            {
+                UserId = userId,
+                Code = newCode,
+                Status = TicketStatus.pending,
+                CreatedAt = DateTime.Now
+            };
+
+            _dbContext.tickets.Add(newTicket);
+            _dbContext.SaveChanges();
+
+            // 4. Respuesta OK
+            return new ServiceResponse<Ticket>()
+            {
+                Success = true,
+                Message = "Ticket created successfully",
+                Data = newTicket
+            };
+        }
+        catch (Exception e)
+        {
+            return new ServiceResponse<Ticket>()
+            {
+                Success = false,
+                Message = e.Message
+            };
+        }
+    }
+
+    public ServiceResponse<Ticket> UpdateTicket(Ticket ticket)
+    {
+        var response = new ServiceResponse<Ticket>();
+        try
+        {
+            var existingTicket = _dbContext.tickets.FirstOrDefault(t => t.Id == ticket.Id);
+
+            if (existingTicket == null)
+            {
+                response.Success = false;
+                response.Message = "Ticket no encontrado";
+                return response;
+            }
+
+            // Actualizar campos (ajusta según tu modelo)
+            existingTicket.Code = ticket.Code;
+            existingTicket.Status = ticket.Status;
+
+            _dbContext.SaveChanges();
+
+            response.Data = existingTicket;
+            response.Success = true;
+            response.Message = "Ticket actualizado correctamente";
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = "Error al actualizar el ticket";
+            // opcional: log ex
+        }
+
+        return response;
     }
 }

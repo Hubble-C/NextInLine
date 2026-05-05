@@ -1,5 +1,6 @@
-<div class="container">
+@model NextInLine.Models.User
 
+<div class="container">
     <div class="row" style="min-height:100vh; display:flex; align-items:center;">
 
         <!-- LEFT SIDE -->
@@ -17,6 +18,7 @@
                 Fast. Smart. Modern.
             </p>
         </div>
+
         <!-- RIGHT SIDE -->
         <div class="col s12 l3">
 
@@ -29,25 +31,49 @@
                     <p class="grey-text">
                         Tap below to join the queue instantly.
                     </p>
-                    <div class="input-field">
-                        <i class="material-icons prefix">email</i>
-                        <input type="text" id="email">
-                        <label for="email">Email Address</label>
-                    </div>
-                    <div class="input-field">
-                        <i class="material-icons prefix">account_box</i>
-                        <input type="text" id="Document">
-                        <label for="Document">Document</label>
-                    </div>
-                    <a class="btn-large teal darken-1 waves-effect waves-light"
-                       style="border-radius:30px; width:100%; margin-top:15px;" asp-action="Index" asp-controller="User">
-                        Get My Turn
-                    </a>
 
-                    <div class="divider" style="margin:25px 0;"></div>
+                    @if (TempData["Success"] != null)
+                    {
+                        <div id="alert-success" class="card-panel green lighten-4 green-text text-darken-4 center">
+                            @TempData["Success"]
+                        </div>
+                    }
 
-                    <p class="grey-text">Average wait time</p>
-                    <h4 class="teal-text text-darken-2">08 min</h4>
+                    @if (TempData["Error"] != null)
+                    {
+                        <div id="alert-error" class="card-panel red lighten-4 red-text text-darken-4 center">
+                            @TempData["Error"]
+                        </div>
+                    }
+
+                    <!-- 📝 FORM -->
+                    <form asp-action="Save" asp-controller="User" method="post">
+                        <input type="hidden" asp-for="Rol" value="user" />
+                        <input type="hidden" asp-for="Status" value="pending" />
+                        <div class="input-field">
+                            <i class="material-icons prefix">person</i>
+                            <input asp-for="Name" required/>
+                            <label asp-for="Name" class="active"></label>
+                        </div>
+
+                        <div class="input-field">
+                            <i class="material-icons prefix">email</i>
+                            <input asp-for="Email" type="email" required/>
+                            <label asp-for="Email" class="active"></label>
+                        </div>
+
+                        <div class="input-field">
+                            <i class="material-icons prefix">account_box</i>
+                            <input asp-for="Document" required/>
+                            <label asp-for="Document" class="active"></label>
+                        </div>
+
+                        <button type="submit"
+                                class="btn-large teal darken-1 waves-effect waves-light"
+                                style="border-radius:30px; width:100%; margin-top:15px;">
+                            Get My Turn
+                        </button>
+                    </form>
 
                 </div>
             </div>
@@ -69,5 +95,15 @@
 
         </div>
     </div>
-
 </div>
+
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.card-panel').forEach(el => {
+            el.style.transition = "opacity 0.5s";
+            el.style.opacity = "0";
+
+            setTimeout(() => el.remove(), 500);
+        });
+    }, 3000);
+</script>
