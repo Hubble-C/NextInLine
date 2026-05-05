@@ -42,7 +42,7 @@ public class PrinterService
         WriteText("Sistema de Turnos\r\n");
         WriteText("--------------------------------\r\n");
         Write(0x1B, 0x61, 0x00);     // Left
-        WriteText($"Cliente : {name}\r\n");
+        WriteText($"Usuario : {name}\r\n");
         WriteText($"Fecha   : {DateTime.Now:dd/MM/yyyy HH:mm}\r\n");
         WriteText("--------------------------------\r\n");
         Write(0x1B, 0x61, 0x01);     // Center
