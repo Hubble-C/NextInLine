@@ -2,6 +2,7 @@ using NextInLine.Interfaces;
 using NextInLine.Services;
 using NextInLine.Data;
 using Microsoft.EntityFrameworkCore;
+using NextInLine.Settings;
 using NextInLine.TurnsHub;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<TicketService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ITurnService, TurnServiceImplementation>();
 builder.Services.AddSingleton<PrinterService>();
 
@@ -20,6 +22,9 @@ builder.Services.AddDbContext<MysqlDbContext>(options =>
     )
 );
 
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings")
+);
 builder.Services.AddSignalR();
 
 var app = builder.Build();
