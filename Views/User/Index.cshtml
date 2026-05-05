@@ -69,10 +69,15 @@
                 <div class="card-content">
                     <h6 class="grey-text text-darken-3"><b>Now Playing</b></h6>
                     <div class="video-container" style="border-radius:15px; overflow:hidden; margin-top:15px;">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                                frameborder="0"
-                                allowfullscreen>
-                        </iframe>
+                        <video id="waitingVideo"
+                               src="/files/waitingroom.mp4"
+                               autoplay
+                               loop
+                               muted
+                               playsinline
+                               style="width:100%; border-radius:15px;">
+                            Tu navegador no soporta la reproducción de video.
+                        </video>
                     </div>
                     <p class="center-align grey-text" style="margin-top:20px;">
                         While you wait, enjoy useful content and announcements.
@@ -131,8 +136,27 @@
         if (incomingCode) {
             const isPending = tickets.some(t => t.code === incomingCode);
             if (!isPending && incomingCode !== "NO_TICKETS") {
+                // Sonido
+                const ctx = new AudioContext();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                oscillator.type = "sine";
+                oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+                oscillator.frequency.setValueAtTime(660, ctx.currentTime + 0.1);
+
+                gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + 0.5);
+
+                // Lo que ya tenías
                 document.getElementById("currentTurn").innerText = incomingCode;
-                toast.innerText = `Now serving: ${incomingCode}`;
+                toast.innerText = Now serving: ${incomingCode};
                 toast.style.display = "block";
                 setTimeout(() => toast.style.display = "none", 3000);
             }
