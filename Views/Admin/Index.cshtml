@@ -1,289 +1,473 @@
 @using NextInLine.Enums
-@model IEnumerable<Ticket> 
+@model IEnumerable<Ticket>
 @{
-    ViewData["message"] = "Mensaje";
-    /*Count Pendings status tickets*/
-    int pendings = @Model.Where(t => t.Status == TicketStatus.pending)
-        .Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
-        .Count();
-    
-    /*All the tickets pendings ordered*/
-    var tickets = @Model.Where(t => t.Status == TicketStatus.pending)
-        .Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
-        .OrderBy(t => t.CreatedAt)
-        .ToList();
-    
-    /*Pendings today*/
-    int servedToday = @Model.Where(t => t.Status == TicketStatus.closed).Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date).Count();
-    
-    /*Pendings Totals*/
-    var pendingsTotal = @Model.Where(t => t.Status == TicketStatus.pending)
-        .Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
-        .Select(t => t.CreatedAt)
-        .ToList();
-    
-    /*Average by time of waiting*/
-    var averageMinutes = pendingsTotal
-        .Select(date => (DateTime.UtcNow - date).TotalMinutes)
-        .DefaultIfEmpty(0)
-        .Average();
-    
-    /*Result of averageMinutes*/
-    var averageTime = TimeSpan.FromMinutes(averageMinutes);
+int pendings = Model.Where(t => t.Status == TicketStatus.pending)
+.Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
+.Count();
+
+var pendingsTotal = Model.Where(t => t.Status == TicketStatus.pending)
+.Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
+.Select(t => t.CreatedAt)
+.ToList();
+
+int servedToday = Model.Where(t => t.Status == TicketStatus.closed)
+.Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
+.Count();
+
+var averageMinutes = pendingsTotal
+.Select(date => (DateTime.UtcNow - date).TotalMinutes)
+.DefaultIfEmpty(0)
+.Average();
+
+var averageTime = TimeSpan.FromMinutes(averageMinutes);
 }
 
-<div id="toast" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #26a69a;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    display: none;
-    z-index: 9999;
-    font-weight: bold;">
-</div>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<div>
-    <div class="container" style="padding-top:35px;">
+<style>
 
-        <!-- HEADER -->
-        <div class="row valign-wrapper">
-            <div class="col s12 m6">
-                <h4 class="grey-text text-darken-4" style="margin:0;">
-                    Panel de control de Tickets
-                </h4>
-                <p class="grey-text">Nota: La pasciencia es una virtud</p>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: #eef2f8;
+        min-height: 100vh;
+    }
+
+    /* NAV */
+    .nil-nav {
+        background: #0c1f3a;
+        padding: 0 32px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .nil-brand {
+        font-family: 'DM Mono', monospace;
+        font-size: 15px;
+        font-weight: 500;
+        color: #b5d4f4;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+    }
+    .nil-brand span { color: #378ADD; }
+    .nil-section {
+        font-size: 12px;
+        color: #4a6a8a;
+        margin-left: 10px;
+        font-family: 'DM Sans', sans-serif;
+    }
+    .nil-nav-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .nil-clock {
+        font-family: 'DM Mono', monospace;
+        font-size: 13px;
+        color: #85b7eb;
+        background: #0d2444;
+        padding: 5px 14px;
+        border-radius: 6px;
+        letter-spacing: 0.03em;
+    }
+
+    /* LAYOUT */
+    .nil-page {
+        padding: 28px 32px;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+    .nil-grid {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    /* CARDS */
+    .nil-card {
+        background: #ffffff;
+        border-radius: 14px;
+        border: 0.5px solid #d1dae8;
+        overflow: hidden;
+    }
+    .nil-card-header {
+        padding: 13px 20px;
+        border-bottom: 0.5px solid #e8edf5;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: #6b8aad;
+    }
+    .nil-card-body { padding: 20px; }
+
+    /* TURNO ACTUAL */
+    .turn-display {
+        text-align: center;
+        padding: 28px 20px 20px;
+    }
+    .turn-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #6b8aad;
+        margin-bottom: 14px;
+    }
+    .turn-code {
+        font-family: 'DM Mono', monospace;
+        font-size: 48px;
+        font-weight: 500;
+        color: #0c1f3a;
+        line-height: 1;
+        margin-bottom: 6px;
+        transition: all 0.3s ease;
+    }
+    .turn-sub {
+        font-size: 12px;
+        color: #6b8aad;
+        margin-bottom: 24px;
+    }
+
+    /* BOTÓN SIGUIENTE */
+    .nil-btn-next-wrap {
+        padding: 0 20px 24px;
+    }
+    .nil-btn-next {
+        width: 100%;
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        position: relative;
+    }
+    .nil-btn-next-inner {
+        width: 100%;
+        padding: 14px 20px;
+        background: linear-gradient(135deg, #185FA5 0%, #0e4277 100%);
+        color: #ffffff;
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        letter-spacing: 0.01em;
+        transition: opacity 0.15s, transform 0.12s;
+        position: relative;
+        overflow: hidden;
+    }
+    .nil-btn-next-inner::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(255,255,255,0.06);
+        border-radius: inherit;
+        opacity: 0;
+        transition: opacity 0.15s;
+    }
+    .nil-btn-next:hover .nil-btn-next-inner::before { opacity: 1; }
+    .nil-btn-next:active .nil-btn-next-inner { transform: scale(0.98); }
+    .nil-btn-next:disabled .nil-btn-next-inner {
+        background: #c5d0de;
+        cursor: not-allowed;
+    }
+
+    .btn-arrow {
+        width: 22px; height: 22px;
+        background: rgba(255,255,255,0.18);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .btn-arrow svg { display: block; }
+
+    /* STATS */
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+    .stat-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 0.5px solid #d1dae8;
+        padding: 16px 18px;
+    }
+    .stat-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: #6b8aad;
+        margin-bottom: 8px;
+    }
+    .stat-value {
+        font-family: 'DM Mono', monospace;
+        font-size: 28px;
+        font-weight: 500;
+        color: #0c1f3a;
+        line-height: 1;
+    }
+    .stat-value.accent-green { color: #3B6D11; }
+    .stat-value.accent-amber { color: #854F0B; font-size: 22px; }
+
+    /* TABLE */
+    .nil-table-wrap { overflow-x: auto; }
+    .nil-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .nil-table thead th {
+        text-align: left;
+        padding: 10px 16px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: #6b8aad;
+        border-bottom: 0.5px solid #d1dae8;
+        background: #f8fafd;
+    }
+    .nil-table tbody td {
+        padding: 13px 16px;
+        border-bottom: 0.5px solid #edf1f7;
+        color: #0c1f3a;
+        font-size: 13px;
+    }
+    .nil-table tbody tr:last-child td { border-bottom: none; }
+    .nil-table tbody tr:hover td { background: #f8fafd; }
+    .mono { font-family: 'DM Mono', monospace; font-weight: 500; }
+
+    .status-pill {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 5px;
+    }
+    .pill-pending { background: #FAEEDA; color: #854F0B; }
+
+    .timer-chip {
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 4px 10px;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    .timer-ok   { background: #EAF3DE; color: #3B6D11; }
+    .timer-warn { background: #FAEEDA; color: #854F0B; }
+    .timer-hot  { background: #FCEBEB; color: #A32D2D; }
+
+    /* TOAST */
+    .nil-toast {
+        position: fixed;
+        top: 72px;
+        right: 24px;
+        background: #0c1f3a;
+        color: #b5d4f4;
+        padding: 13px 20px;
+        border-radius: 10px;
+        border: 0.5px solid #1e3a5c;
+        display: none;
+        z-index: 9999;
+        font-size: 13px;
+        font-weight: 500;
+        font-family: 'DM Mono', monospace;
+        letter-spacing: 0.03em;
+    }
+</style>
+
+<div id="toast" class="nil-toast"></div>
+
+<!-- NAV -->
+<nav class="nil-nav">
+    <div style="display:flex; align-items:center;">
+        <a class="nil-brand" href="/">Next<span>InLine</span></a>
+        <span class="nil-section">/ Admin</span>
+    </div>
+    <div class="nil-nav-right">
+        <div class="nil-clock" id="adminClock">--:--:--</div>
+    </div>
+</nav>
+
+<!-- PAGE -->
+<div class="nil-page">
+    <div class="nil-grid">
+
+        <!-- LEFT — turno + botón -->
+        <div>
+            <div class="nil-card">
+                <div class="turn-display">
+                    <div class="turn-label">Turno en curso</div>
+                    <div class="turn-code" id="currentTurn">—</div>
+                    <div class="turn-sub">Atendiendo ahora</div>
+                </div>
+                <div class="nil-btn-next-wrap">
+                    <form id="antiForgeryForm">
+                        @Html.AntiForgeryToken()
+                        <button id="nextTurnBtn" class="nil-btn-next" type="button">
+                            <div class="nil-btn-next-inner">
+                                <div class="btn-arrow">
+                                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                                        <path d="M2 5.5H9M9 5.5L6 2.5M9 5.5L6 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                Llamar siguiente turno
+                            </div>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <!-- MAIN GRID -->
-        <div class="row">
-
-            <!-- LEFT SIDE -->
-            <div class="col s12 l4">
-
-                <!-- CURRENT TURN -->
-                <div class="card white z-depth-1" style="border-radius:18px;">
-                    <div class="card-content center-align">
-                        <p class="grey-text">Next Turn</p>
-                        
-                        <h1 id="currentTurn" class="teal-text text-darken-2" style="margin:0; font-size:5rem;"></h1>
-                        
-                        <p class="grey-text">Serving now</p>
-                    </div>
+        <!-- RIGHT — stats + tabla -->
+        <div>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">En espera</div>
+                    <div class="stat-value" id="pendingsToday">@pendings</div>
                 </div>
-
-                <!-- QUICK ACTIONS -->
-                <div class="card white z-depth-1" style="border-radius:18px;">
-                    <div class="card-content">
-
-                        <h6><b>Quick Actions</b></h6>
-
-                        @*<a class="btn-large teal darken-1 waves-effect waves-light"
-                           style="width:100%; border-radius:30px; margin-top:15px;">
-                            <i class="material-icons left">skip_next</i>
-                            Next Turn
-                        </a>*@
-                        <form id="antiForgeryForm">
-                            @Html.AntiForgeryToken()
-                            <button id="nextTurnBtn"
-                                    class="btn-large teal darken-1"
-                                    style="width:100%; border-radius:30px; margin-top:15px;">
-                                <i class="material-icons left">skip_next</i>
-                                Next Turn
-                            </button>
-                        </form>
-                        <a class="btn-large orange waves-effect waves-light"
-                           style="width:100%; border-radius:30px; margin-top:15px;">
-                            <i class="material-icons left">free_breakfast</i>
-                            Break Mode
-                        </a>
-
-                        <a class="btn-large red waves-effect waves-light"
-                           style="width:100%; border-radius:30px; margin-top:15px;">
-                            <i class="material-icons left">cancel</i>
-                            Cancel Turn
-                        </a>
-
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-label">Atendidos hoy</div>
+                    <div class="stat-value accent-green">@servedToday</div>
                 </div>
-
+                <div class="stat-card">
+                    <div class="stat-label">Espera promedio</div>
+                    <div class="stat-value accent-amber mono">@($"{averageTime.Hours:D2}:{averageTime.Minutes:D2}")</div>
+                </div>
             </div>
 
-            <!-- CENTER -->
-            <div class="col s12 l8">
-
-                <!-- LIVE STATS -->
-                <div class="row">
-
-                    <div class="col s12 m4">
-                        <div class="card white z-depth-1 center-align" style="border-radius:18px;">
-                            <div class="card-content">
-                                <h4 class="teal-text" id="pendingsToday">@pendings</h4>
-                                <p class="grey-text">Waiting</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col s12 m4">
-                        <div class="card white z-depth-1 center-align" style="border-radius:18px;">
-                            <div class="card-content">
-                                <h4 class="teal-text">@($"{averageTime.Hours}h {averageTime.Minutes}m")</h4>
-                                <p class="grey-text">Avg Wait</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col s12 m4">
-                        <div class="card white z-depth-1 center-align" style="border-radius:18px;">
-                            <div class="card-content">
-                                <h4 class="teal-text">@servedToday</h4>
-                                <p class="grey-text">Served Today</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- TURN TABLE -->
-                <div class="card white z-depth-1" style="border-radius:18px;">
-                    <div class="card-content">
-
-                        <div class="row valign-wrapper" style="margin-bottom:0;">
-                            <div class="col s12 m6">
-                                <h5 class="grey-text text-darken-4">All Tickets</h5>
-                            </div>
-                        </div>
-
-                        <table class="highlight responsive-table striped centered">
+            <div class="nil-card">
+                <div class="nil-card-header">Cola de tickets</div>
+                <div class="nil-card-body" style="padding:0;">
+                    <div class="nil-table-wrap">
+                        <table class="nil-table">
                             <thead>
-                                <tr>
-                                    <th>Ticket</th>
-                                    <th>Status</th>
-                                    <th>Tiempo de espera</th>
-                                </tr>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Estado</th>
+                                <th>Tiempo en espera</th>
+                            </tr>
                             </thead>
-
-                            <tbody>
-
-
-                            </tbody>
+                            <tbody id="ticketsTbody"></tbody>
                         </table>
-
                     </div>
                 </div>
-
             </div>
-
         </div>
 
     </div>
-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
-
 <script>
+    // ── SignalR ──
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/turnHub")
         .withAutomaticReconnect()
         .build();
-    
-    //Store next Turn on session
-    const nextTurn = sessionStorage.getItem("nextTurn");
+
+    const toast       = document.getElementById("toast");
+    const btnNext     = document.getElementById("nextTurnBtn");
     const statPending = document.getElementById("pendingsToday");
-    const toast = document.getElementById("toast");
-    const btnNext = document.getElementById("nextTurnBtn");
-    const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
-    
-    btnNext.addEventListener("click", async (e) => {
-        e.preventDefault();
+    const token       = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
 
-        console.log("CLICK NEXT TURN");
-        
-        try {
-            const res = await fetch('/Admin/NextTurn', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': token
-                }
-            });
+    // ── Reloj Colombia ──
+    function tickClock() {
+        const col = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Bogota" }));
+        const pad = n => String(n).padStart(2, "0");
+        document.getElementById("adminClock").textContent =
+            `${pad(col.getHours())}:${pad(col.getMinutes())}:${pad(col.getSeconds())}`;
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
 
-            const data = await res.text();
-            console.log("STATUS:", res.status);
-            console.log("OK:", res.ok);
-            sessionStorage.setItem("nextTurn", data);
-            
-            setTimeout(()=>{
-                window.location.reload();
-            }, 2000)
-           
-            console.log("RESPUESTA:", data);
-        } catch (error) {
-            console.error("ERROR FETCH:", error);
-        }
+    // ── Cache de tickets en memoria ──
+    let cachedTickets = [];
 
-        
-    });
-    
-    // To call last turn receive
-    connection.on("ReceiveTurn", (code) => {
-        console.log("RECIBIDO:", code);
-        
-        const toast = document.getElementById("toast");
+    function timerClass(ms) {
+        const m = Math.floor(ms / 60000);
+        return m < 5 ? "timer-ok" : m < 15 ? "timer-warn" : "timer-hot";
+    }
 
-        if (!toast) {
-            console.error("Toast no existe en el DOM");
+    function renderTable() {
+        const tbody = document.getElementById("ticketsTbody");
+        if (!cachedTickets.length) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#6b8aad; padding:24px; font-size:13px;">Sin tickets en espera</td></tr>`;
             return;
         }
+        tbody.innerHTML = cachedTickets.map(t => {
+            const ms  = Date.now() - new Date(t.createdAt).getTime();
+            const sec = Math.floor(ms / 1000);
+            const min = Math.floor(sec / 60);
+            const fmt = `${String(min).padStart(2,"0")}:${String(sec % 60).padStart(2,"0")}`;
+            return `
+                <tr>
+                    <td class="mono">${t.code}</td>
+                    <td><span class="status-pill pill-pending">Pending</span></td>
+                    <td><span class="timer-chip ${timerClass(ms)}">${fmt}</span></td>
+                </tr>`;
+        }).join("");
+    }
 
-        toast.innerText = `Nuevo turno: ${code}`;
+    async function refreshTickets() {
+        const stored = sessionStorage.getItem("nextTurn");
+        document.getElementById("currentTurn").textContent = stored || "—";
+
+        const res = await fetch("/Admin/GetTicketsPendings");
+        cachedTickets = await res.json();
+        statPending.textContent = cachedTickets.length;
+        renderTable();
+    }
+
+    // Fetch cada 30 s, render cada 1 s
+    refreshTickets();
+    setInterval(refreshTickets, 30000);
+    setInterval(renderTable, 1000);
+
+    // ── Botón siguiente turno ──
+    btnNext.addEventListener("click", async () => {
+        btnNext.disabled = true;
+        try {
+            const res  = await fetch("/Admin/NextTurn", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": token
+                }
+            });
+            const data = await res.text();
+            sessionStorage.setItem("nextTurn", data);
+            setTimeout(() => window.location.reload(), 1800);
+        } catch (err) {
+            console.error("Error NextTurn:", err);
+            btnNext.disabled = false;
+        }
+    });
+
+    // ── SignalR: recibir turno ──
+    connection.on("ReceiveTurn", (code) => {
+        toast.textContent = `Nuevo turno: ${code}`;
         toast.style.display = "block";
-
         setTimeout(() => {
             toast.style.display = "none";
             refreshTickets();
         }, 3000);
     });
 
-    connection.start().then(() => {
-        console.log("SignalR conectado");
-    });
-    
-    async function refreshTickets() {
-        // Set value next turn
-        if(nextTurn){
-            document.getElementById("currentTurn").innerText = nextTurn;
-        }else{
-            document.getElementById("currentTurn").innerText = "Sin turnos";
-        }
-        
-        const res = await fetch('/Admin/GetTicketsPendings');
-        const tickets = await res.json();
-        
-        statPending.textContent = tickets.length;
-       // document.getElementById("pendingsToday").innerText = "35";
-        const tbody = document.querySelector("tbody");
-        tbody.innerHTML = "";
-        
-        tickets
-            .forEach(t => {
-
-                const waiting = new Date() - new Date(t.createdAt);
-                const minutes = Math.floor(waiting / 60000);
-                const seconds = Math.floor((waiting % 60000) / 1000);
-
-                tbody.innerHTML += `
-                <tr>
-                    <td>${t.code}</td>
-                    <td><span class="chip orange white-text">pending</span></td>
-                    <td>${minutes}:${seconds}</td>
-                </tr>
-            `;
-            });
-    }
-    refreshTickets();
+    connection.start().then(() => console.log("SignalR Admin conectado"));
 </script>
