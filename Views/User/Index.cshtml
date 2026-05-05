@@ -13,98 +13,267 @@
         .OrderByDescending(t => t.CreatedAt)
         .FirstOrDefault();
 }
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<div class="container-fluid teal lighten-5" style="min-height:100vh; padding:40px;">
+<style>
 
-    <!-- TOP BAR -->
-    <div class="row valign-wrapper" style="margin-bottom:30px;">
-        <div class="col s12 m6">
-            <h4 class="grey-text text-darken-4" style="margin:0;">
-                <b>Fila</b> Queue System
-            </h4>
-            <p class="grey-text">Welcome. Please wait for your turn.</p>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: #eef2f8;
+        min-height: 100vh;
+    }
+
+    /* NAV */
+    .nil-nav {
+        background: #0c1f3a;
+        padding: 0 32px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .nil-brand {
+        font-family: 'DM Mono', monospace;
+        font-size: 15px;
+        font-weight: 500;
+        color: #b5d4f4;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+    }
+    .nil-brand span { color: #378ADD; }
+    .nil-nav-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .nil-clock {
+        font-family: 'DM Mono', monospace;
+        font-size: 13px;
+        color: #85b7eb;
+        background: #0d2444;
+        padding: 5px 14px;
+        border-radius: 6px;
+        letter-spacing: 0.03em;
+    }
+    .nil-waiting-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #0d2444;
+        color: #85b7eb;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 5px 14px;
+        border-radius: 6px;
+    }
+    .badge-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #378ADD;
+        flex-shrink: 0;
+    }
+
+    /* LAYOUT */
+    .nil-page {
+        padding: 28px 32px;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+    .nil-grid {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    /* CARDS */
+    .nil-card {
+        background: #ffffff;
+        border-radius: 14px;
+        border: 0.5px solid #d1dae8;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+    .nil-card:last-child { margin-bottom: 0; }
+    .nil-card-header {
+        padding: 13px 20px;
+        border-bottom: 0.5px solid #e8edf5;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: #6b8aad;
+    }
+    .nil-card-body { padding: 20px; }
+
+    /* TURNO ACTUAL */
+    .turn-display {
+        text-align: center;
+        padding: 32px 20px 28px;
+    }
+    .turn-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #6b8aad;
+        margin-bottom: 14px;
+    }
+    .turn-code {
+        font-family: 'DM Mono', monospace;
+        font-size: 56px;
+        font-weight: 500;
+        color: #0c1f3a;
+        line-height: 1;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+    }
+    .turn-sub {
+        font-size: 12px;
+        color: #6b8aad;
+    }
+
+    /* QUEUE LIST */
+    .queue-list { list-style: none; }
+    .queue-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 20px;
+        border-bottom: 0.5px solid #edf1f7;
+        transition: background 0.1s;
+    }
+    .queue-item:last-child { border-bottom: none; }
+    .queue-item:hover { background: #f8fafd; }
+    .queue-code {
+        font-family: 'DM Mono', monospace;
+        font-weight: 500;
+        font-size: 13px;
+        color: #0c1f3a;
+    }
+    .queue-time {
+        font-family: 'DM Mono', monospace;
+        font-size: 11px;
+        color: #6b8aad;
+        background: #eef2f8;
+        padding: 3px 9px;
+        border-radius: 4px;
+    }
+    .queue-empty {
+        padding: 20px;
+        text-align: center;
+        font-size: 13px;
+        color: #6b8aad;
+    }
+
+    /* VIDEO */
+    .nil-video {
+        width: 100%;
+        border-radius: 10px;
+        display: block;
+    }
+    .video-caption {
+        font-size: 12px;
+        color: #6b8aad;
+        text-align: center;
+        margin-top: 14px;
+    }
+
+    /* TOAST */
+    .nil-toast {
+        position: fixed;
+        top: 72px;
+        right: 24px;
+        background: #0c1f3a;
+        color: #b5d4f4;
+        padding: 13px 20px;
+        border-radius: 10px;
+        border: 0.5px solid #1e3a5c;
+        display: none;
+        z-index: 9999;
+        font-size: 13px;
+        font-weight: 500;
+        font-family: 'DM Mono', monospace;
+        letter-spacing: 0.03em;
+    }
+</style>
+
+<div id="toast" class="nil-toast"></div>
+
+<!-- NAV -->
+<nav class="nil-nav">
+    <a class="nil-brand" href="/">Next<span>InLine</span></a>
+    <div class="nil-nav-right">
+        <div class="nil-waiting-badge">
+            <div class="badge-dot"></div>
+            <span id="waitingCount">@tickets.Count</span> en espera
         </div>
-        <div class="col s12 m6 right-align">
-            <span class="chip white z-depth-1">
-                <i class="material-icons tiny">schedule</i>
-                Waiting: <span id="waitingCount">@tickets.Count</span>
-            </span>
-        </div>
+        <div class="nil-clock" id="userClock">--:--:--</div>
+        <span style="font-size:11px; color:#4a6a8a;">Medellín</span>
     </div>
+</nav>
 
-    <div class="row">
+<!-- PAGE -->
+<div class="nil-page">
+    <div class="nil-grid">
 
-        <!-- LEFT SIDE -->
-        <div class="col s12 l3">
-
-            <!-- CURRENT TURN -->
-            <div class="card white z-depth-1" style="border-radius:18px;">
-                <div class="card-content center-align">
-                    <p class="grey-text">CURRENT TURN</p>
-                    <h1 id="currentTurn" class="teal-text text-darken-2" style="margin:0; font-size:5rem;">
-                        @(currentTurn?.Code ?? "—")
-                    </h1>
-                    <p class="grey-text">Now serving</p>
+        <!-- LEFT — turno actual + próximos -->
+        <div>
+            <div class="nil-card">
+                <div class="turn-display">
+                    <div class="turn-label">Turno actual</div>
+                    <div class="turn-code" id="currentTurn">@(currentTurn?.Code ?? "—")</div>
+                    <div class="turn-sub">Atendiendo ahora</div>
                 </div>
             </div>
 
-            <!-- NEXT TURNS -->
-            <div class="card white z-depth-1" style="border-radius:18px;">
-                <div class="card-content">
-                    <h6 class="grey-text text-darken-3"><b>Next in line</b></h6>
-                    <ul id="nextInLine" class="collection" style="border:none;">
-                        @foreach (var ticket in tickets.Take(5))
+            <div class="nil-card">
+                <div class="nil-card-header">Próximos en fila</div>
+                <ul class="queue-list" id="nextInLine">
+                    @if (!tickets.Any())
+                    {
+                        <li class="queue-empty">Sin tickets en espera</li>
+                    }
+                    else
+                    {
+                        @foreach (var ticket in tickets.Take(10))
                         {
-                            <li class="collection-item">@ticket.Code</li>
+                            var h = ticket.CreatedAt.ToString("HH");
+                            var m = ticket.CreatedAt.ToString("mm");
+                            <li class="queue-item">
+                                <span class="queue-code">@ticket.Code</span>
+                                <span class="queue-time">@h:@m</span>
+                            </li>
                         }
-                    </ul>
-                </div>
+                    }
+                </ul>
             </div>
-
         </div>
 
-        <!-- RIGHT -->
-        <div class="col s12 l6">
-            <div class="card white z-depth-1" style="border-radius:18px;">
-                <div class="card-content">
-                    <h6 class="grey-text text-darken-3"><b>Now Playing</b></h6>
-                    <div class="video-container" style="border-radius:15px; overflow:hidden; margin-top:15px;">
-                        <video id="waitingVideo"
-                               src="/files/waitingroom.mp4"
-                               autoplay
-                               loop
-                               muted
-                               playsinline
-                               style="width:100%; border-radius:15px;">
-                            Tu navegador no soporta la reproducción de video.
-                        </video>
-                    </div>
-                    <p class="center-align grey-text" style="margin-top:20px;">
-                        While you wait, enjoy useful content and announcements.
-                    </p>
-                </div>
+        <!-- RIGHT — video -->
+        <div class="nil-card">
+            <div class="nil-card-header">Sala de espera</div>
+            <div class="nil-card-body">
+                <video class="nil-video"
+                       src="/files/waitingroom.mp4"
+                       autoplay loop muted playsinline>
+                    Tu navegador no soporta la reproducción de video.
+                </video>
+                <p class="video-caption">Mientras esperas, disfruta del contenido.</p>
             </div>
         </div>
 
     </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #26a69a;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    display: none;
-    z-index: 9999;
-    font-weight: bold;">
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
 <script>
+    // ── SignalR ──
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/turnHub")
         .withAutomaticReconnect()
@@ -112,56 +281,66 @@
 
     const toast = document.getElementById("toast");
 
-    connection.on("ReceiveTurn", (code) => {
-        refreshTickets(code);
-    });
+    // ── Reloj Colombia ──
+    function tickClock() {
+        const col = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Bogota" }));
+        const pad = n => String(n).padStart(2, "0");
+        document.getElementById("userClock").textContent =
+            `${pad(col.getHours())}:${pad(col.getMinutes())}:${pad(col.getSeconds())}`;
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
 
-    connection.start().then(() => {
-        console.log("SignalR conectado - Sala de espera");
-    });
-
+    // ── Actualizar lista de tickets ──
     async function refreshTickets(incomingCode = null) {
-        const res = await fetch('/Admin/GetTicketsPendings');
+        const res     = await fetch("/Admin/GetTicketsPendings");
         const tickets = await res.json();
 
-        document.getElementById("waitingCount").innerText = tickets.length;
+        document.getElementById("waitingCount").textContent = tickets.length;
 
         const list = document.getElementById("nextInLine");
-        list.innerHTML = "";
-        tickets.slice(0, 10).forEach(t => {
-            list.innerHTML += `<li class="collection-item">${t.code}</li>`;
-        });
+        if (!tickets.length) {
+            list.innerHTML = `<li class="queue-empty">Sin tickets en espera</li>`;
+        } else {
+            list.innerHTML = tickets.slice(0, 10).map(t => {
+                const d   = new Date(t.createdAt);
+                const pad = n => String(n).padStart(2, "0");
+                return `
+                    <li class="queue-item">
+                        <span class="queue-code">${t.code}</span>
+                        <span class="queue-time">${pad(d.getHours())}:${pad(d.getMinutes())}</span>
+                    </li>`;
+            }).join("");
+        }
 
-        // Si el code que llegó NO está en pendientes, es el turno actual
         if (incomingCode) {
             const isPending = tickets.some(t => t.code === incomingCode);
             if (!isPending && incomingCode !== "NO_TICKETS") {
                 // Sonido
-                const ctx = new AudioContext();
+                const ctx        = new AudioContext();
                 const oscillator = ctx.createOscillator();
-                const gainNode = ctx.createGain();
-
+                const gainNode   = ctx.createGain();
                 oscillator.connect(gainNode);
                 gainNode.connect(ctx.destination);
-
                 oscillator.type = "sine";
                 oscillator.frequency.setValueAtTime(880, ctx.currentTime);
                 oscillator.frequency.setValueAtTime(660, ctx.currentTime + 0.1);
-
                 gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-
                 oscillator.start(ctx.currentTime);
                 oscillator.stop(ctx.currentTime + 0.5);
 
-                // Lo que ya tenías
-                document.getElementById("currentTurn").innerText = incomingCode;
-                toast.innerText = `Now serving: ${incomingCode}`;
+                // Actualizar turno en pantalla
+                document.getElementById("currentTurn").textContent = incomingCode;
+                toast.textContent = `Turno llamado: ${incomingCode}`;
                 toast.style.display = "block";
                 setTimeout(() => toast.style.display = "none", 3000);
             }
         }
     }
+
+    connection.on("ReceiveTurn", (code) => refreshTickets(code));
+    connection.start().then(() => console.log("SignalR Usuario conectado"));
 
     refreshTickets();
 </script>
