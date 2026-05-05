@@ -1,0 +1,264 @@
+/* ============================================================
+   NextInLine — user.css
+   Estilos para vistas User: Index (sala espera) y Turn (form)
+   ============================================================ */
+
+/* ── User Waiting Room Grid ── */
+.user-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* ── Current Turn Display ── */
+.turn-display--user {
+    text-align: center;
+    padding: 36px 20px 30px;
+}
+.turn-display--user .turn-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--nil-slate);
+    margin-bottom: 14px;
+}
+.turn-display--user .turn-code {
+    font-family: var(--font-mono);
+    font-size: 60px;
+    font-weight: 500;
+    color: var(--nil-navy);
+    line-height: 1;
+    margin-bottom: 8px;
+    transition: all .35s ease;
+    letter-spacing: -.02em;
+}
+.turn-display--user .turn-sub {
+    font-size: 12px;
+    color: var(--nil-slate);
+}
+
+/* ── Queue List ── */
+.queue-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 20px;
+    border-bottom: .5px solid var(--nil-border-soft);
+    transition: background .1s;
+}
+.queue-item:last-child { border-bottom: none; }
+.queue-item:hover { background: #f8fafd; }
+.queue-code {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--nil-navy);
+}
+.queue-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--nil-slate);
+    background: var(--nil-bg);
+    padding: 3px 9px;
+    border-radius: 4px;
+}
+.queue-empty {
+    padding: 24px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--nil-slate);
+}
+
+/* ── Video Card ── */
+.nil-video {
+    width: 100%;
+    border-radius: var(--radius-md);
+    display: block;
+}
+.video-caption {
+    font-size: 12px;
+    color: var(--nil-slate);
+    text-align: center;
+    margin-top: 14px;
+    margin-bottom: 0;
+}
+
+/* ── Turn Form (User/Turn) ── */
+.turn-page {
+    min-height: calc(100vh - 56px);
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    align-items: center;
+    gap: 40px;
+    padding: 48px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.turn-hero__eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--nil-blue-mid);
+    margin-bottom: 18px;
+}
+.turn-hero__title {
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 600;
+    color: var(--nil-navy);
+    line-height: 1.18;
+    margin-bottom: 18px;
+    letter-spacing: -.02em;
+}
+.turn-hero__title em {
+    font-style: italic;
+    color: var(--nil-blue-mid);
+    font-weight: 400;
+}
+.turn-hero__desc {
+    font-size: 15px;
+    color: var(--nil-slate);
+    line-height: 1.65;
+    max-width: 460px;
+    margin-bottom: 32px;
+}
+.turn-hero__badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.turn-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--nil-surface);
+    border: .5px solid var(--nil-border);
+    border-radius: var(--radius-sm);
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--nil-text-muted);
+    box-shadow: var(--shadow-sm);
+}
+.turn-hero__badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--nil-blue-mid);
+}
+
+/* Form card */
+.form-card {
+    background: var(--nil-surface);
+    border-radius: var(--radius-xl);
+    border: .5px solid var(--nil-border);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+.form-card__header {
+    padding: 24px 28px 20px;
+    border-bottom: .5px solid var(--nil-border-soft);
+}
+.form-card__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--nil-navy);
+    margin: 0 0 4px;
+}
+.form-card__sub {
+    font-size: 12px;
+    color: var(--nil-slate);
+    margin: 0;
+}
+.form-card__body {
+    padding: 28px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+.form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--nil-slate);
+    margin-bottom: 7px;
+}
+.form-input {
+    width: 100%;
+    padding: 11px 14px;
+    background: #f8fafd;
+    border: .5px solid var(--nil-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--nil-text);
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+}
+.form-input:focus {
+    border-color: var(--nil-blue-mid);
+    background: var(--nil-surface);
+    box-shadow: 0 0 0 3px rgba(55,138,221,.12);
+}
+.form-input::placeholder { color: #aab8cc; }
+
+.form-btn {
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, var(--nil-blue) 0%, #0e4277 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+    transition: opacity .15s, transform .12s;
+    letter-spacing: .01em;
+}
+.form-btn:hover { opacity: .92; }
+.form-btn:active { transform: scale(.98); }
+
+.form-alert {
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.form-alert--success {
+    background: var(--nil-green-bg);
+    color: var(--nil-green);
+    border: .5px solid #c3e6a0;
+}
+.form-alert--error {
+    background: var(--nil-red-bg);
+    color: var(--nil-red);
+    border: .5px solid #f0c0c0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .user-grid  { grid-template-columns: 1fr; }
+    .turn-page  { grid-template-columns: 1fr; padding: 32px 16px; }
+    .turn-hero__desc { max-width: 100%; }
+}

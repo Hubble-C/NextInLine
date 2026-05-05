@@ -1,0 +1,418 @@
+/* ============================================================
+   NextInLine — layout.css
+   Estilos globales: navbar, footer, base
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── Reset base ── */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --nil-navy:       #0c1f3a;
+    --nil-navy-mid:   #0d2444;
+    --nil-navy-light: #1e3a5c;
+    --nil-blue:       #185FA5;
+    --nil-blue-mid:   #378ADD;
+    --nil-blue-pale:  #b5d4f4;
+    --nil-blue-muted: #85b7eb;
+    --nil-blue-dim:   #4a6a8a;
+    --nil-slate:      #6b8aad;
+    --nil-bg:         #eef2f8;
+    --nil-surface:    #ffffff;
+    --nil-border:     #d1dae8;
+    --nil-border-soft:#e8edf5;
+    --nil-text:       #0c1f3a;
+    --nil-text-muted: #6b8aad;
+    --nil-green:      #3B6D11;
+    --nil-green-bg:   #EAF3DE;
+    --nil-amber:      #854F0B;
+    --nil-amber-bg:   #FAEEDA;
+    --nil-red:        #A32D2D;
+    --nil-red-bg:     #FCEBEB;
+
+    --font-sans: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+
+    --radius-sm:  6px;
+    --radius-md:  10px;
+    --radius-lg:  14px;
+    --radius-xl:  20px;
+
+    --shadow-sm:  0 1px 4px rgba(12,31,58,.06);
+    --shadow-md:  0 4px 16px rgba(12,31,58,.10);
+    --shadow-lg:  0 8px 32px rgba(12,31,58,.14);
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    background: var(--nil-bg);
+    color: var(--nil-text);
+    min-height: 100vh;
+}
+
+/* ── NIL Navbar ── */
+.nil-navbar {
+    background: var(--nil-navy);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--nil-navy-light);
+}
+
+.nil-navbar__brand {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--nil-blue-pale);
+    letter-spacing: .04em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+.nil-navbar__brand span { color: var(--nil-blue-mid); }
+
+.nil-navbar__section {
+    font-size: 12px;
+    color: var(--nil-blue-dim);
+    margin-left: 10px;
+    font-family: var(--font-sans);
+}
+
+.nil-navbar__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nil-navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 8px;
+}
+
+.nil-navbar__link {
+    font-size: 13px;
+    color: var(--nil-blue-muted);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    transition: background .15s, color .15s;
+    font-weight: 500;
+}
+.nil-navbar__link:hover {
+    background: rgba(55,138,221,.12);
+    color: var(--nil-blue-pale);
+}
+.nil-navbar__link.active {
+    background: rgba(55,138,221,.18);
+    color: var(--nil-blue-pale);
+}
+
+/* chips de nav */
+.nil-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--nil-navy-mid);
+    color: var(--nil-blue-muted);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--nil-navy-light);
+}
+.nil-chip--mono {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--nil-blue-muted);
+    letter-spacing: .03em;
+}
+.nil-chip__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--nil-blue-mid);
+    flex-shrink: 0;
+}
+
+/* ── NIL Footer ── */
+.nil-footer {
+    background: var(--nil-surface);
+    border-top: 1px solid var(--nil-border-soft);
+    margin-top: 72px;
+    padding: 48px 0 0;
+}
+
+.nil-footer__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px 40px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 40px;
+}
+
+.nil-footer__brand {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--nil-navy);
+    letter-spacing: .04em;
+    margin-bottom: 10px;
+    display: block;
+}
+.nil-footer__brand span { color: var(--nil-blue-mid); }
+.nil-footer__desc {
+    font-size: 13px;
+    color: var(--nil-text-muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.nil-footer__heading {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--nil-navy);
+    margin-bottom: 14px;
+}
+.nil-footer__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.nil-footer__list li + li { margin-top: 8px; }
+.nil-footer__list a {
+    font-size: 13px;
+    color: var(--nil-text-muted);
+    text-decoration: none;
+    transition: color .15s;
+}
+.nil-footer__list a:hover { color: var(--nil-blue-mid); }
+
+.nil-footer__contact-line {
+    font-size: 13px;
+    color: var(--nil-text-muted);
+    margin-bottom: 8px;
+}
+
+.nil-footer__bottom {
+    border-top: 1px solid var(--nil-border-soft);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+.nil-footer__copy {
+    font-size: 12px;
+    color: var(--nil-text-muted);
+}
+
+/* ── NIL Page wrapper ── */
+.nil-page {
+    padding: 28px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* ── NIL Card ── */
+.nil-card {
+    background: var(--nil-surface);
+    border-radius: var(--radius-lg);
+    border: .5px solid var(--nil-border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+.nil-card__header {
+    padding: 13px 20px;
+    border-bottom: .5px solid var(--nil-border-soft);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--nil-slate);
+}
+.nil-card__body { padding: 20px; }
+
+/* ── Toast ── */
+.nil-toast {
+    position: fixed;
+    top: 72px;
+    right: 24px;
+    background: var(--nil-navy);
+    color: var(--nil-blue-pale);
+    padding: 13px 20px;
+    border-radius: var(--radius-md);
+    border: .5px solid var(--nil-navy-light);
+    display: none;
+    z-index: 9999;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    letter-spacing: .03em;
+    box-shadow: var(--shadow-md);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .nil-navbar { padding: 0 16px; }
+    .nil-navbar__links { display: none; }
+    .nil-page { padding: 20px 16px; }
+    .nil-footer__inner { grid-template-columns: 1fr; gap: 24px; }
+    .nil-footer__bottom { padding: 14px 16px; }
+}
+
+/* ── Blindaje contra Materialize ── */
+/* Materialize pisa .nav-wrapper y nav estilos */
+.nil-navbar,
+.nil-navbar * {
+    box-sizing: border-box !important;
+}
+.nil-navbar {
+    background: var(--nil-navy) !important;
+    height: 56px !important;
+    line-height: 56px !important;
+    padding: 0 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+.nil-navbar--light {
+    background: rgba(255,255,255,.92) !important;
+    backdrop-filter: blur(12px);
+}
+/* Materialize pone color blanco en links dentro de nav */
+.nil-navbar a,
+.nil-navbar a:hover,
+.nil-navbar a:focus,
+.nil-navbar a:visited {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+/* Chips — Materialize no debe pisarlos */
+.nil-chip {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    background: var(--nil-navy-mid) !important;
+    color: var(--nil-blue-muted) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    padding: 5px 14px !important;
+    border-radius: var(--radius-sm) !important;
+    border: 1px solid var(--nil-navy-light) !important;
+    height: auto !important;
+    line-height: normal !important;
+    /* Materialize tiene su propia clase .chip */
+    box-shadow: none !important;
+}
+.nil-chip--mono {
+    font-family: var(--font-mono) !important;
+    font-size: 13px !important;
+    color: var(--nil-blue-muted) !important;
+    letter-spacing: .03em !important;
+}
+.nil-chip__dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background: var(--nil-blue-mid) !important;
+    flex-shrink: 0 !important;
+    /* Materialize puede leer esto como close button */
+    cursor: default !important;
+}
+/* Materialize agrega padding a i dentro de chips */
+.nil-chip i,
+.nil-chip .material-icons {
+    display: none !important;
+}
+/* Navbar right layout */
+.nil-navbar__right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    height: 56px !important;
+}
+.nil-navbar__brand {
+    font-family: var(--font-mono) !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: var(--nil-blue-pale) !important;
+    letter-spacing: .04em !important;
+    text-decoration: none !important;
+    line-height: 1 !important;
+}
+.nil-navbar--light .nil-navbar__brand { color: var(--nil-navy) !important; }
+.nil-navbar__brand span { color: var(--nil-blue-mid) !important; }
+.nil-navbar__section {
+    font-size: 12px !important;
+    color: var(--nil-blue-dim) !important;
+    margin-left: 10px !important;
+}
+.nil-navbar__links {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+.nil-navbar__link {
+    font-size: 13px !important;
+    color: var(--nil-blue-muted) !important;
+    text-decoration: none !important;
+    padding: 6px 12px !important;
+    border-radius: var(--radius-sm) !important;
+    transition: background .15s, color .15s !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+}
+.nil-navbar__link:hover { background: rgba(55,138,221,.12) !important; color: var(--nil-blue-pale) !important; }
+.nil-navbar__link.active { background: rgba(55,138,221,.18) !important; color: var(--nil-blue-pale) !important; }
+
+/* ── nil-card vs Materialize .card ── */
+.nil-card {
+    background: var(--nil-surface) !important;
+    border-radius: var(--radius-lg) !important;
+    border: .5px solid var(--nil-border) !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow-sm) !important;
+    /* Materialize .card tiene margin-bottom y otros estilos */
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.nil-card__header {
+    padding: 13px 20px !important;
+    border-bottom: .5px solid var(--nil-border-soft) !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    letter-spacing: .09em !important;
+    text-transform: uppercase !important;
+    color: var(--nil-slate) !important;
+    background: var(--nil-surface) !important;
+    margin: 0 !important;
+}
+.nil-card__body {
+    padding: 20px !important;
+    background: var(--nil-surface) !important;
+}
+/* Video dentro de nil-card */
+.nil-video-card video {
+    width: 100% !important;
+    display: block !important;
+    border-radius: 10px !important;
+}

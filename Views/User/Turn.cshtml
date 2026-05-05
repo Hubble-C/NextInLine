@@ -1,109 +1,109 @@
 @model NextInLine.Models.User
+@{
+    ViewData["Title"] = "Obtén tu turno";
+}
 
-<div class="container">
-    <div class="row" style="min-height:100vh; display:flex; align-items:center;">
+<div class="turn-page">
 
-        <!-- LEFT SIDE -->
-        <div class="col s12 m6 center-align">
-            <h2 class="grey-text text-darken-4 thin">
-                Welcome back to <br>
-                <span class="teal-text text-darken-2"><i>Fila</i></span>
-            </h2>
-
-            <p class="flow-text grey-text text-darken-1">
-                Manage queues, reduce waiting time, and deliver a better customer experience.
-            </p>
-
-            <p class="grey-text">
-                Fast. Smart. Modern.
-            </p>
+    <!-- ── Hero izquierdo ── -->
+    <div class="turn-hero">
+        <div class="turn-hero__eyebrow">Sistema de turnos digital</div>
+        <h1 class="turn-hero__title">
+            Tu turno,<br>
+            sin <em>filas</em>,<br>
+            sin esperas.
+        </h1>
+        <p class="turn-hero__desc">
+            Regístrate en segundos y recibe tu turno digital.
+            Te avisamos cuando sea tu momento, sin hacer cola física.
+        </p>
+        <div class="turn-hero__badges">
+            <div class="turn-hero__badge">
+                <span class="dot"></span>
+                Sin papel
+            </div>
+            <div class="turn-hero__badge">
+                <span class="dot"></span>
+                Tiempo real
+            </div>
+            <div class="turn-hero__badge">
+                <span class="dot"></span>
+                Notificación sonora
+            </div>
         </div>
+    </div>
 
-        <!-- RIGHT SIDE -->
-        <div class="col s12 l3">
+    <!-- ── Formulario ── -->
+    <div class="form-card">
+        <div class="form-card__header">
+            <div class="form-card__title">Obtén tu turno</div>
+            <p class="form-card__sub">Ingresa tus datos para unirte a la fila.</p>
+        </div>
+        <div class="form-card__body">
 
-            <!-- TAKE TURN -->
-            <div class="card white z-depth-1" style="border-radius:18px;">
-                <div class="card-content center-align">
-
-                    <h5 class="grey-text text-darken-4">Need a Ticket?</h5>
-
-                    <p class="grey-text">
-                        Tap below to join the queue instantly.
-                    </p>
-
-                    @if (TempData["Success"] != null)
-                    {
-                        <div id="alert-success" class="card-panel green lighten-4 green-text text-darken-4 center">
-                            @TempData["Success"]
-                        </div>
-                    }
-
-                    @if (TempData["Error"] != null)
-                    {
-                        <div id="alert-error" class="card-panel red lighten-4 red-text text-darken-4 center">
-                            @TempData["Error"]
-                        </div>
-                    }
-
-                    <!-- 📝 FORM -->
-                    <form asp-action="Save" asp-controller="User" method="post">
-                        <input type="hidden" asp-for="Rol" value="user" />
-                        <input type="hidden" asp-for="Status" value="pending" />
-                        <div class="input-field">
-                            <i class="material-icons prefix">person</i>
-                            <input asp-for="Name" required/>
-                            <label asp-for="Name" class="active"></label>
-                        </div>
-
-                        <div class="input-field">
-                            <i class="material-icons prefix">email</i>
-                            <input asp-for="Email" type="email" required/>
-                            <label asp-for="Email" class="active"></label>
-                        </div>
-
-                        <div class="input-field">
-                            <i class="material-icons prefix">account_box</i>
-                            <input asp-for="Document" required/>
-                            <label asp-for="Document" class="active"></label>
-                        </div>
-
-                        <button type="submit"
-                                class="btn-large teal darken-1 waves-effect waves-light"
-                                style="border-radius:30px; width:100%; margin-top:15px;">
-                            Get My Turn
-                        </button>
-                    </form>
-
+            @if (TempData["Success"] != null)
+            {
+                <div class="form-alert form-alert--success" id="alert-success">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    @TempData["Success"]
                 </div>
-            </div>
+            }
 
-            <!-- HELP -->
-            <div class="card white z-depth-1" style="border-radius:18px;">
-                <div class="card-content center-align">
-
-                    <i class="material-icons medium teal-text">support_agent</i>
-
-                    <h6 class="grey-text text-darken-4"><b>Need Assistance?</b></h6>
-
-                    <p class="grey-text">
-                        Ask one of our advisors for help.
-                    </p>
-
+            @if (TempData["Error"] != null)
+            {
+                <div class="form-alert form-alert--error" id="alert-error">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    @TempData["Error"]
                 </div>
-            </div>
+            }
+
+            <form asp-action="Save" asp-controller="User" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Rol"    value="user" />
+                <input type="hidden" asp-for="Status" value="pending" />
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Name">Nombre completo</label>
+                    <input class="form-input" asp-for="Name" placeholder="Ej. Juan Pérez" required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Email">Correo electrónico</label>
+                    <input class="form-input" asp-for="Email" type="email" placeholder="correo@ejemplo.com" required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Document">Número de documento</label>
+                    <input class="form-input" asp-for="Document" placeholder="CC / CE / Pasaporte" required />
+                </div>
+
+                <button type="submit" class="form-btn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                    Obtener mi turno
+                </button>
+            </form>
 
         </div>
     </div>
+
 </div>
 
+@section Scripts {
 <script>
+    // Auto-dismiss alerts after 4 s
     setTimeout(() => {
-        document.querySelectorAll('.card-panel').forEach(el => {
-            el.style.transition = "opacity 0.5s";
+        document.querySelectorAll('.form-alert').forEach(el => {
+            el.style.transition = "opacity .4s";
             el.style.opacity = "0";
-
-            setTimeout(() => el.remove(), 500);
+            setTimeout(() => el.remove(), 400);
         });
-    }, 3000);
+    }, 4000);
 </script>
+}

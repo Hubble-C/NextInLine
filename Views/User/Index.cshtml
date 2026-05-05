@@ -1,231 +1,34 @@
 @using NextInLine.Enums
 @model IEnumerable<Ticket>
 @{
+    ViewData["Title"] = "Sala de espera";
+
     var tickets = Model
-        .Where(t => t.Status == TicketStatus.pending)
-        .Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
+        .Where(t => t.Status == TicketStatus.pending && t.CreatedAt.Date == DateTime.UtcNow.Date)
         .OrderBy(t => t.CreatedAt)
         .ToList();
 
     var currentTurn = Model
-        .Where(t => t.Status == TicketStatus.closed)
-        .Where(t => t.CreatedAt.Date == DateTime.UtcNow.Date)
+        .Where(t => t.Status == TicketStatus.open && t.CreatedAt.Date == DateTime.UtcNow.Date)
         .OrderByDescending(t => t.CreatedAt)
         .FirstOrDefault();
 }
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<style>
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-        font-family: 'DM Sans', sans-serif;
-        background: #eef2f8;
-        min-height: 100vh;
-    }
-
-    /* NAV */
-    .nil-nav {
-        background: #0c1f3a;
-        padding: 0 32px;
-        height: 56px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
-    .nil-brand {
-        font-family: 'DM Mono', monospace;
-        font-size: 15px;
-        font-weight: 500;
-        color: #b5d4f4;
-        letter-spacing: 0.04em;
-        text-decoration: none;
-    }
-    .nil-brand span { color: #378ADD; }
-    .nil-nav-right {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-    .nil-clock {
-        font-family: 'DM Mono', monospace;
-        font-size: 13px;
-        color: #85b7eb;
-        background: #0d2444;
-        padding: 5px 14px;
-        border-radius: 6px;
-        letter-spacing: 0.03em;
-    }
-    .nil-waiting-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        background: #0d2444;
-        color: #85b7eb;
-        font-size: 12px;
-        font-weight: 500;
-        padding: 5px 14px;
-        border-radius: 6px;
-    }
-    .badge-dot {
-        width: 6px; height: 6px;
-        border-radius: 50%;
-        background: #378ADD;
-        flex-shrink: 0;
-    }
-
-    /* LAYOUT */
-    .nil-page {
-        padding: 28px 32px;
-        max-width: 1280px;
-        margin: 0 auto;
-    }
-    .nil-grid {
-        display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 20px;
-        align-items: start;
-    }
-
-    /* CARDS */
-    .nil-card {
-        background: #ffffff;
-        border-radius: 14px;
-        border: 0.5px solid #d1dae8;
-        overflow: hidden;
-        margin-bottom: 16px;
-    }
-    .nil-card:last-child { margin-bottom: 0; }
-    .nil-card-header {
-        padding: 13px 20px;
-        border-bottom: 0.5px solid #e8edf5;
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        color: #6b8aad;
-    }
-    .nil-card-body { padding: 20px; }
-
-    /* TURNO ACTUAL */
-    .turn-display {
-        text-align: center;
-        padding: 32px 20px 28px;
-    }
-    .turn-label {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #6b8aad;
-        margin-bottom: 14px;
-    }
-    .turn-code {
-        font-family: 'DM Mono', monospace;
-        font-size: 56px;
-        font-weight: 500;
-        color: #0c1f3a;
-        line-height: 1;
-        margin-bottom: 8px;
-        transition: all 0.3s ease;
-    }
-    .turn-sub {
-        font-size: 12px;
-        color: #6b8aad;
-    }
-
-    /* QUEUE LIST */
-    .queue-list { list-style: none; }
-    .queue-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 11px 20px;
-        border-bottom: 0.5px solid #edf1f7;
-        transition: background 0.1s;
-    }
-    .queue-item:last-child { border-bottom: none; }
-    .queue-item:hover { background: #f8fafd; }
-    .queue-code {
-        font-family: 'DM Mono', monospace;
-        font-weight: 500;
-        font-size: 13px;
-        color: #0c1f3a;
-    }
-    .queue-time {
-        font-family: 'DM Mono', monospace;
-        font-size: 11px;
-        color: #6b8aad;
-        background: #eef2f8;
-        padding: 3px 9px;
-        border-radius: 4px;
-    }
-    .queue-empty {
-        padding: 20px;
-        text-align: center;
-        font-size: 13px;
-        color: #6b8aad;
-    }
-
-    /* VIDEO */
-    .nil-video {
-        width: 100%;
-        border-radius: 10px;
-        display: block;
-    }
-    .video-caption {
-        font-size: 12px;
-        color: #6b8aad;
-        text-align: center;
-        margin-top: 14px;
-    }
-
-    /* TOAST */
-    .nil-toast {
-        position: fixed;
-        top: 72px;
-        right: 24px;
-        background: #0c1f3a;
-        color: #b5d4f4;
-        padding: 13px 20px;
-        border-radius: 10px;
-        border: 0.5px solid #1e3a5c;
-        display: none;
-        z-index: 9999;
-        font-size: 13px;
-        font-weight: 500;
-        font-family: 'DM Mono', monospace;
-        letter-spacing: 0.03em;
-    }
-</style>
 
 <div id="toast" class="nil-toast"></div>
 
-<!-- NAV -->
-<nav class="nil-nav">
-    <a class="nil-brand" href="/">Next<span>InLine</span></a>
-    <div class="nil-nav-right">
-        <div class="nil-waiting-badge">
-            <div class="badge-dot"></div>
-            <span id="waitingCount">@tickets.Count</span> en espera
-        </div>
-        <div class="nil-clock" id="userClock">--:--:--</div>
-        <span style="font-size:11px; color:#4a6a8a;">Medellín</span>
-    </div>
-</nav>
+@section Head {
+<script>
+    window.__initialWaiting = @tickets.Count;
+</script>
+}
 
-<!-- PAGE -->
 <div class="nil-page">
-    <div class="nil-grid">
+    <div class="user-grid">
 
-        <!-- LEFT — turno actual + próximos -->
+        <!-- ── Columna izquierda: turno actual + próximos ── -->
         <div>
-            <div class="nil-card">
-                <div class="turn-display">
+            <div class="nil-card" style="margin-bottom:16px;">
+                <div class="turn-display--user">
                     <div class="turn-label">Turno actual</div>
                     <div class="turn-code" id="currentTurn">@(currentTurn?.Code ?? "—")</div>
                     <div class="turn-sub">Atendiendo ahora</div>
@@ -233,7 +36,7 @@
             </div>
 
             <div class="nil-card">
-                <div class="nil-card-header">Próximos en fila</div>
+                <div class="nil-card__header">Próximos en fila</div>
                 <ul class="queue-list" id="nextInLine">
                     @if (!tickets.Any())
                     {
@@ -243,11 +46,9 @@
                     {
                         @foreach (var ticket in tickets.Take(10))
                         {
-                            var h = ticket.CreatedAt.ToString("HH");
-                            var m = ticket.CreatedAt.ToString("mm");
                             <li class="queue-item">
                                 <span class="queue-code">@ticket.Code</span>
-                                <span class="queue-time">@h:@m</span>
+                                <span class="queue-time">@ticket.CreatedAt.ToString("HH:mm")</span>
                             </li>
                         }
                     }
@@ -255,13 +56,14 @@
             </div>
         </div>
 
-        <!-- RIGHT — video -->
-        <div class="nil-card">
-            <div class="nil-card-header">Sala de espera</div>
-            <div class="nil-card-body">
+        <!-- ── Columna derecha: video ── -->
+        <div class="nil-card nil-video-card">
+            <div class="nil-card__header">Sala de espera</div>
+            <div class="nil-card__body">
                 <video class="nil-video"
                        src="/files/waitingroom.mp4"
-                       autoplay loop muted playsinline>
+                       autoplay loop muted playsinline
+                       style="width:100%;border-radius:10px;display:block;background:#0c1f3a;">
                     Tu navegador no soporta la reproducción de video.
                 </video>
                 <p class="video-caption">Mientras esperas, disfruta del contenido.</p>
@@ -271,32 +73,70 @@
     </div>
 </div>
 
+@section Scripts {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
 <script>
-    // ── SignalR ──
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/turnHub")
         .withAutomaticReconnect()
         .build();
 
-    const toast = document.getElementById("toast");
+    const toast        = document.getElementById("toast");
+    const waitingCountEl = document.getElementById("waitingCount");
 
-    // ── Reloj Colombia ──
-    function tickClock() {
-        const col = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Bogota" }));
-        const pad = n => String(n).padStart(2, "0");
-        document.getElementById("userClock").textContent =
-            `${pad(col.getHours())}:${pad(col.getMinutes())}:${pad(col.getSeconds())}`;
+    // Inicializar badge del layout con el conteo del servidor
+    if (waitingCountEl && window.__initialWaiting !== undefined) {
+        waitingCountEl.textContent = window.__initialWaiting;
     }
-    tickClock();
-    setInterval(tickClock, 1000);
 
-    // ── Actualizar lista de tickets ──
+    // ── Sonidos ──
+    function playSound(type) {
+        try {
+            const ctx  = new AudioContext();
+            const osc  = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            if (type === 'new') {
+                // Ticket nuevo: dos pulsos cortos ascendentes
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(1046, ctx.currentTime);
+                osc.frequency.setValueAtTime(1318, ctx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.35, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.35);
+            } else if (type === 'turn') {
+                // Turno llamado: tono descendente más notable
+                osc.type = "triangle";
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                osc.frequency.setValueAtTime(660, ctx.currentTime + 0.15);
+                osc.frequency.setValueAtTime(440, ctx.currentTime + 0.30);
+                gain.gain.setValueAtTime(0.5, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.55);
+            }
+        } catch (e) {}
+    }
+
+    // ── Actualizar lista y badge ──
     async function refreshTickets(incomingCode = null) {
         const res     = await fetch("/Admin/GetTicketsPendings");
         const tickets = await res.json();
 
-        document.getElementById("waitingCount").textContent = tickets.length;
+        if (waitingCountEl) {
+            const prev = parseInt(waitingCountEl.textContent) || 0;
+            const next = tickets.length;
+
+            // Sonido si llegó un ticket nuevo
+            if (next > prev) {
+                playSound('new');
+            }
+
+            waitingCountEl.textContent = next;
+        }
 
         const list = document.getElementById("nextInLine");
         if (!tickets.length) {
@@ -313,24 +153,12 @@
             }).join("");
         }
 
-        if (incomingCode) {
+        if (incomingCode && incomingCode !== "NO_TICKETS") {
             const isPending = tickets.some(t => t.code === incomingCode);
-            if (!isPending && incomingCode !== "NO_TICKETS") {
-                // Sonido
-                const ctx        = new AudioContext();
-                const oscillator = ctx.createOscillator();
-                const gainNode   = ctx.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(ctx.destination);
-                oscillator.type = "sine";
-                oscillator.frequency.setValueAtTime(880, ctx.currentTime);
-                oscillator.frequency.setValueAtTime(660, ctx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-                oscillator.start(ctx.currentTime);
-                oscillator.stop(ctx.currentTime + 0.5);
+            if (!isPending) {
+                // Sonido de turno llamado
+                playSound('turn');
 
-                // Actualizar turno en pantalla
                 document.getElementById("currentTurn").textContent = incomingCode;
                 toast.textContent = `Turno llamado: ${incomingCode}`;
                 toast.style.display = "block";
@@ -340,7 +168,8 @@
     }
 
     connection.on("ReceiveTurn", (code) => refreshTickets(code));
-    connection.start().then(() => console.log("SignalR Usuario conectado"));
+    connection.start().catch(err => console.error("SignalR error:", err));
 
     refreshTickets();
 </script>
+}
