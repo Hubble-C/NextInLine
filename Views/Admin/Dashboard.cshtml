@@ -1,152 +1,130 @@
+@model NextInLine.Models.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
 
-<div class="teal lighten-5" style="min-height:100vh; padding:35px 0;">
+<div class="nil-page">
 
-    <div class="container">
+    <!-- Header -->
+    <div class="dash-header">
+        <h1 class="dash-header__title">Dashboard</h1>
+        <p class="dash-header__sub">Resumen de actividad del día de hoy.</p>
+    </div>
 
-        <!-- HEADER -->
-        <div class="row valign-wrapper">
+    <!-- Métricas -->
+    <div class="dash-metric-grid">
 
-            <div class="col s12 m6">
-                <h3 class="grey-text text-darken-4" style="margin:0; font-weight:600;">
-                    Admin Dashboard
-                </h3>
-
-                <p class="grey-text">
-                    Monitor users and queue performance in real time.
-                </p>
+        <div class="dash-metric">
+            <div class="dash-metric__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--nil-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-metric__value">@Model.TotalUsersCount</div>
+                <div class="dash-metric__label">Usuarios únicos</div>
             </div>
         </div>
 
-        <!-- METRICS -->
-        <div class="row">
-
-            <div class="col s12 m6 l3">
-                <div class="card white z-depth-1 center-align" style="border-radius:20px;">
-                    <div class="card-content">
-                        <i class="material-icons teal-text medium">groups</i>
-                        <h4 class="teal-text text-darken-2">142</h4>
-                        <p class="grey-text">Total Users</p>
-                    </div>
-                </div>
+        <div class="dash-metric">
+            <div class="dash-metric__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--nil-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <path d="M8 21h8M12 17v4"/>
+                </svg>
             </div>
-
-            <div class="col s12 m6 l3">
-                <div class="card white z-depth-1 center-align" style="border-radius:20px;">
-                    <div class="card-content">
-                        <i class="material-icons teal-text medium">confirmation_number</i>
-                        <h4 class="teal-text text-darken-2">58</h4>
-                        <p class="grey-text">Tickets Today</p>
-                    </div>
-                </div>
+            <div>
+                <div class="dash-metric__value">@Model.TicketsToday</div>
+                <div class="dash-metric__label">Tickets hoy</div>
             </div>
-
-            <div class="col s12 m6 l3">
-                <div class="card white z-depth-1 center-align" style="border-radius:20px;">
-                    <div class="card-content">
-                        <i class="material-icons teal-text medium">timer</i>
-                        <h4 class="teal-text text-darken-2">07 min</h4>
-                        <p class="grey-text">Avg Wait Time</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col s12 m6 l3">
-                <div class="card white z-depth-1 center-align" style="border-radius:20px;">
-                    <div class="card-content">
-                        <i class="material-icons teal-text medium">check_circle</i>
-                        <h4 class="teal-text text-darken-2">51</h4>
-                        <p class="grey-text">Completed</p>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <!-- FULL TABLE -->
-        <div class="row">
-
-            <div class="col s12">
-
-                <div class="card white z-depth-1" style="border-radius:20px;">
-
-                    <div class="card-content">
-
-                        <div class="row valign-wrapper">
-
-                            <div class="col s12 m6">
-                                <h5 class="grey-text text-darken-4">
-                                    Registered Users
-                                </h5>
-                            </div>
-
-                            <div class="col s12 m6 right-align">
-                                <input type="text"
-                                       placeholder="Search user..."
-                                       style="border:1px solid #ddd; padding-left:15px; border-radius:10px;">
-                            </div>
-
-                        </div>
-
-                        <table class="highlight responsive-table">
-
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Turns</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                <tr>
-                                    <td>John Carter</td>
-                                    <td>john@email.com</td>
-                                    <td><span class="new badge green" data-badge-caption="">Active</span></td>
-                                    <td>12</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Emma Smith</td>
-                                    <td>emma@email.com</td>
-                                    <td><span class="new badge blue" data-badge-caption="">Waiting</span></td>
-                                    <td>6</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Michael Brown</td>
-                                    <td>michael@email.com</td>
-                                    <td><span class="new badge orange" data-badge-caption="">Paused</span></td>
-                                    <td>8</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Sophia Lee</td>
-                                    <td>sophia@email.com</td>
-                                    <td><span class="new badge green" data-badge-caption="">Active</span></td>
-                                    <td>15</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Daniel White</td>
-                                    <td>daniel@email.com</td>
-                                    <td><span class="new badge red" data-badge-caption="">Offline</span></td>
-                                    <td>3</td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
+        <div class="dash-metric">
+            <div class="dash-metric__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--nil-green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
             </div>
+            <div>
+                <div class="dash-metric__value" style="color:var(--nil-green);">@Model.CompletedToday</div>
+                <div class="dash-metric__label">Completados hoy</div>
+            </div>
+        </div>
 
+        <div class="dash-metric">
+            <div class="dash-metric__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--nil-amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-metric__value" style="color:var(--nil-amber);font-size:22px;">@Model.AvgWaitTime</div>
+                <div class="dash-metric__label">Espera promedio</div>
+            </div>
         </div>
 
     </div>
 
+    <!-- Tabla de usuarios activos de hoy -->
+    <div class="nil-card">
+        <div class="dash-table-header">
+            <h5>Actividad de hoy</h5>
+            <a asp-action="Index" asp-controller="Admin"
+               style="font-size:12px; color:var(--nil-blue-mid); text-decoration:none; font-weight:500;">
+                Ir a cola →
+            </a>
+        </div>
+        <div class="nil-table-wrap">
+            <table class="nil-table">
+                <thead>
+                    <tr>
+                        <th>Ticket</th>
+                        <th>Estado</th>
+                        <th>Creado</th>
+                    </tr>
+                </thead>
+                <tbody id="dashTbody">
+                    <tr>
+                        <td colspan="3" style="text-align:center;color:var(--nil-slate);padding:28px;font-size:13px;">
+                            Cargando...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
+
+@section Scripts {
+<script>
+    async function loadDashTable() {
+        const res = await fetch("/Admin/GetTicketsPendings");
+        const tickets = await res.json();
+        const tbody = document.getElementById("dashTbody");
+
+        if (!tickets.length) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--nil-slate);padding:28px;font-size:13px;">Sin tickets en espera ahora mismo</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = tickets.map(t => {
+            const d   = new Date(t.createdAt);
+            const pad = n => String(n).padStart(2,"0");
+            const time = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            return `
+                <tr>
+                    <td class="nil-mono">${t.code}</td>
+                    <td><span class="status-pill pill-pending">Pending</span></td>
+                    <td style="font-size:12px;color:var(--nil-slate);font-family:var(--font-mono);">${time}</td>
+                </tr>`;
+        }).join("");
+    }
+
+    loadDashTable();
+</script>
+}

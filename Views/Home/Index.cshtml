@@ -1,148 +1,148 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "NextInLine — Smart Queue Management";
 }
 
-<div class="container">
-    <div class="row">
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+    <div class="hero__inner">
+        <div class="hero__eyebrow">Queue Management Platform</div>
 
-        <div class="col s12 center-align">
+        <h1 class="hero__title">
+            Atiende a tus clientes<br>
+            sin <em>filas</em>, sin caos.
+        </h1>
 
-            <div class="section" style="min-height: 85vh; display: flex; flex-direction: column; justify-content: center;">
+        <p class="hero__desc">
+            NextInLine es un sistema de turnos digital para clínicas, bancos,
+            tiendas y oficinas. Crea filas virtuales, llama clientes en orden
+            y gestiona tu sala de espera en tiempo real.
+        </p>
 
-                <!-- TITLE -->
-                <h2 class="grey-text text-darken-4 display-3" style="font-weight: 500;">
-                    Serve your customers<br>
-                    <span class="teal-text text-darken-2" style="font-style: italic;">
-                        without waiting lines
-                    </span>, without chaos.
-                </h2>
-
-                <!-- DESCRIPTION -->
-                <p class="grey-text text-darken-1 flow-text" style="max-width: 700px; margin: 20px auto;">
-                    Fila is a smart queue management system for clinics, banks, retail stores,
-                    and service offices. Create digital queues, call customers in order,
-                    and manage your waiting room experience in real time.
-                </p>
-
-                <p class="grey-text text-darken-1" style="max-width: 700px; margin: 0 auto;">
-                    Improve efficiency, reduce waiting frustration, and give your customers a smoother,
-                    more modern experience without paper tickets or physical lines.
-                </p>
-
-                <!-- BUTTONS -->
-                <div class="section" style="margin-top: 30px;">
-                    <a class="btn btn-dark" style="border-radius: 30px;" asp-controller="User" asp-action="Turn">
-                        GET YOUR TURN
-                    </a>
-                    
-                </div>
-
-                <!-- STATS -->
-                <div class="divider" style="margin-top: 40px;"></div>
-
-                <div class="row" style="margin-top: 30px;">
-                    
-                    <div class="col s12 m4 center-align">
-                        <h5 class="teal-text text-darken-2">-62%</h5>
-                        <p class="grey-text">Average waiting time</p>
-                    </div>
-
-                    <div class="col s12 m4 center-align">
-                        <h5 class="teal-text text-darken-2">+38%</h5>
-                        <p class="grey-text">Customer satisfaction (NPS)</p>
-                    </div>
-
-                    <div class="col s12 m4 center-align">
-                        <h5 class="teal-text text-darken-2">0</h5>
-                        <p class="grey-text">Paper-based queues</p>
-                    </div>
-                    <div class="divider" style="margin-top: 40px;"></div>
-                </div>
-
-            </div>
-
+        <div class="hero__actions">
+            <a asp-controller="User" asp-action="Turn" class="btn-primary-hero">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                </svg>
+                Obtener turno ahora
+            </a>
+            <a href="#features" class="btn-secondary-hero">
+                Ver características
+            </a>
         </div>
 
+        <div class="hero__stats">
+            <div class="hero__stat">
+                <span class="hero__stat-value">−62%</span>
+                <span class="hero__stat-label">Tiempo de espera promedio</span>
+            </div>
+            <div class="hero__stat">
+                <span class="hero__stat-value">+38%</span>
+                <span class="hero__stat-label">Satisfacción del cliente (NPS)</span>
+            </div>
+            <div class="hero__stat">
+                <span class="hero__stat-value">0</span>
+                <span class="hero__stat-label">Tickets en papel</span>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
-<section class="py-5" >
-
-<div class="container">
-
-    <!-- TITLE -->
-    <div class="text-center mb-5">
-        <small class="text-primary fw-bold">FEATURES</small>
-        <h2 class="display-4 fw-light mt-2">
-            Everything you need to make queues <br>
-            <em>simply work.</em>
+<!-- ══════════════ FEATURES ══════════════ -->
+<section class="features" id="features">
+    <div class="section-inner">
+        <span class="section-eyebrow">Características</span>
+        <h2 class="section-title">
+            Todo lo que necesitas para que<br>
+            las filas <em>simplemente funcionen.</em>
         </h2>
+
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-clipboard2-check-fill"></i>
+                </div>
+                <div class="feature-title">Registro inteligente</div>
+                <p class="feature-desc">
+                    Crea tickets en segundos validando el documento.
+                    Si el usuario ya existe, el sistema lo reconoce automáticamente.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-display"></i>
+                </div>
+                <div class="feature-title">Sala de espera en vivo</div>
+                <p class="feature-desc">
+                    Pantalla con el turno actual, estado de la cola en tiempo real
+                    y contenido visual mientras se espera.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <div class="feature-title">Panel del asesor</div>
+                <p class="feature-desc">
+                    Llama el siguiente turno y actualiza datos del cliente
+                    desde un dashboard único y sencillo.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-volume-up-fill"></i>
+                </div>
+                <div class="feature-title">Llamada por sonido</div>
+                <p class="feature-desc">
+                    Alertas sonoras y notificaciones automáticas cuando
+                    el turno del cliente es llamado.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+                <div class="feature-title">Métricas claras</div>
+                <p class="feature-desc">
+                    Tiempo promedio de atención, rendimiento por asesor
+                    y estadísticas de demanda en tiempo real.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <div class="feature-title">Tiempo real con SignalR</div>
+                <p class="feature-desc">
+                    Actualización instantánea de la cola sin recargar la página,
+                    para asesores y clientes simultáneamente.
+                </p>
+            </div>
+
+        </div>
     </div>
+</section>
 
-    <!-- GRID -->
-    <div class="row g-4">
-
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 text-center p-4">
-                <i class="bi bi-clipboard2-check-fill text-primary fs-1 mb-3"></i>
-                <h4>Smart Registration</h4>
-                <p class="text-muted">
-                    Create tickets in seconds by validating ID. If the user already exists, the system recognizes them automatically.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 text-center p-4">
-                <i class="bi bi-display text-primary fs-1 mb-3"></i>
-                <h4>Live Waiting Room</h4>
-                <p class="text-muted">
-                    Screen with current ticket, live queue status, and visual content.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 text-center p-4">
-                <i class="bi bi-headset text-primary fs-1 mb-3"></i>
-                <h4>Advisor Panel</h4>
-                <p class="text-muted">
-                    Call the next ticket and update customer data from a single dashboard.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 text-center p-4">
-                <i class="bi bi-volume-up-fill text-primary fs-1 mb-3"></i>
-                <h4>Voice Calling</h4>
-                <p class="text-muted">
-                    Sound alerts and automatic voice notifications.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 text-center p-4">
-                <i class="bi bi-bar-chart-fill text-primary fs-1 mb-3"></i>
-                <h4>Clear Metrics</h4>
-                <p class="text-muted">
-                    Average service time, advisor performance, and live demand statistics.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card border-0 shadow-sm h-100 text-center p-4">
-                <i class="bi bi-qr-code text-primary fs-1 mb-3"></i>
-                <h4>QR Access</h4>
-                <p class="text-muted">
-                    Customers can take a ticket by scanning a QR code. No paper, no contact.
-                </p>
-            </div>
-        </div>
-
+<!-- ══════════════ CTA ══════════════ -->
+<section class="cta-section">
+    <div class="cta-section__inner">
+        <h2 class="cta-section__title">¿Listo para eliminar las filas?</h2>
+        <p class="cta-section__desc">
+            Únete a la cola digital ahora mismo. Sin instalaciones, sin papel,
+            sin esperas innecesarias.
+        </p>
+        <a asp-controller="User" asp-action="Turn" class="btn-cta">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+            </svg>
+            Obtener mi turno
+        </a>
     </div>
-
-</div>
 </section>
