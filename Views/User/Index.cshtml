@@ -131,6 +131,25 @@
         if (incomingCode) {
             const isPending = tickets.some(t => t.code === incomingCode);
             if (!isPending && incomingCode !== "NO_TICKETS") {
+                // Sonido
+                const ctx = new AudioContext();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                oscillator.type = "sine";
+                oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+                oscillator.frequency.setValueAtTime(660, ctx.currentTime + 0.1);
+
+                gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + 0.5);
+
+                // Lo que ya tenías
                 document.getElementById("currentTurn").innerText = incomingCode;
                 toast.innerText = `Now serving: ${incomingCode}`;
                 toast.style.display = "block";
