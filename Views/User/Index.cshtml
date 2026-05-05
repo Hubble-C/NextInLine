@@ -1,17 +1,17 @@
 @using NextInLine.Enums
 @model IEnumerable<Ticket>
 @{
-    ViewData["Title"] = "Sala de espera";
+ViewData["Title"] = "Sala de espera";
 
-    var tickets = Model
-        .Where(t => t.Status == TicketStatus.pending && t.CreatedAt.Date == DateTime.UtcNow.Date)
-        .OrderBy(t => t.CreatedAt)
-        .ToList();
+var tickets = Model
+.Where(t => t.Status == TicketStatus.pending && t.CreatedAt.Date == DateTime.UtcNow.Date)
+.OrderBy(t => t.CreatedAt)
+.ToList();
 
-    var currentTurn = Model
-        .Where(t => t.Status == TicketStatus.open && t.CreatedAt.Date == DateTime.UtcNow.Date)
-        .OrderByDescending(t => t.CreatedAt)
-        .FirstOrDefault();
+var currentTurn = Model
+.Where(t => t.Status == TicketStatus.open && t.CreatedAt.Date == DateTime.UtcNow.Date)
+.OrderByDescending(t => t.CreatedAt)
+.FirstOrDefault();
 }
 
 <div id="toast" class="nil-toast"></div>
@@ -40,17 +40,17 @@
                 <ul class="queue-list" id="nextInLine">
                     @if (!tickets.Any())
                     {
-                        <li class="queue-empty">Sin tickets en espera</li>
+                    <li class="queue-empty">Sin tickets en espera</li>
                     }
                     else
                     {
-                        @foreach (var ticket in tickets.Take(10))
-                        {
-                            <li class="queue-item">
-                                <span class="queue-code">@ticket.Code</span>
-                                <span class="queue-time">@ticket.CreatedAt.ToString("HH:mm")</span>
-                            </li>
-                        }
+                    @foreach (var ticket in tickets.Take(10))
+                    {
+                    <li class="queue-item">
+                        <span class="queue-code">@ticket.Code</span>
+                        <span class="queue-time">@ticket.CreatedAt.ToString("HH:mm")</span>
+                    </li>
+                    }
                     }
                 </ul>
             </div>
@@ -77,6 +77,31 @@
 @section Scripts {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
 <script>
+
+    function hablar(code) {
+        const mensaje = new SpeechSynthesisUtterance(`Turno ${code}, por favor pase a caja`);
+        mensaje.lang = "es-ES";
+        mensaje.rate = 0.9;
+
+        const voces = speechSynthesis.getVoices();
+
+        if (voces.length === 0) {
+            // Las voces aún no cargaron, esperar el evento
+            speechSynthesis.addEventListener("voiceschanged", () => {
+                const voz = speechSynthesis.getVoices()
+                        .find(v => v.lang.startsWith("es") && v.name.toLowerCase().includes("female"))
+                    || speechSynthesis.getVoices().find(v => v.lang.startsWith("es"));
+                if (voz) mensaje.voice = voz;
+                speechSynthesis.speak(mensaje);
+            }, { once: true });
+        } else {
+            const voz = voces.find(v => v.lang.startsWith("es") && v.name.toLowerCase().includes("female"))
+                || voces.find(v => v.lang.startsWith("es"));
+            if (voz) mensaje.voice = voz;
+            speechSynthesis.speak(mensaje);
+        }
+    }
+
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/turnHub")
         .withAutomaticReconnect()
@@ -163,6 +188,8 @@
             if (!isPending) {
                 const audio = new Audio('/files/turnSoud.mp3');
                 audio.play().catch(err => console.error("Audio error:", err));
+
+                hablar(incomingCode);
 
                 document.getElementById("currentTurn").textContent = incomingCode;
                 toast.textContent = `Turno llamado: ${incomingCode}`;
